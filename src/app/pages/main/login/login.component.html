@@ -1,0 +1,26 @@
+<body>
+    <div class="container">
+        <div class="row" style="justify-content: flex-start;">
+            <p style="color: black; font-size: 36px; text-align: left; font-weight: 400;">Login to VoteView</p>
+            <p class="H_text">Email</p>
+            <mat-form-field class="inp" appearance="outline">
+                <mat-label>Enter your email</mat-label>
+                <input matInput type="text" id="username">
+            </mat-form-field>
+            <p class="H_text">Password</p>
+            <mat-form-field class="inp" appearance="outline">
+                <mat-label>Enter your password</mat-label>
+                <input matInput type="password" id="password">
+            </mat-form-field>
+        </div>
+        <button mat-flat-button type="submit" color="primary" class="custom-button" (click)="navigateToMain()">Login</button>
+
+
+        <p style="margin-top: 10px;">
+            Don't you have an account? 
+            <a (click)="navigateToSignUp()" class="sign-up-link">Sign up</a>
+        </p>
+    </div>
+
+    <div class="pic"></div>
+</body>
