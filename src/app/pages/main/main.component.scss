@@ -1,51 +1,119 @@
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    background-color: #f0f0f0;
-    font-family: Arial, sans-serif;
+.fxLayout-dark {
+  width: 100%;
+  height: 64px;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: #22292d;
+  padding: 0 20px;
+}
+
+.fxLayout {
+  align-items: center;
+  display: flex;
+  img[logo] {
+    height: 50px;
+    padding-bottom: 5px;
+    padding-right: 5px;
   }
-  
-  .image-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 50%;
-    margin: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 20px;
-    background-color: #fff;
+
+  span {
+    font-size: 32px;
+    color: #dfb370;
   }
-  
-  h1 {
-    margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.button_fx {
+  flex-direction: row;
+  align-items: center;
+  display: flex;
+  img[logo] {
+    height: 30px;
+    padding-bottom: 5px;
+    padding-right: 10px;
   }
-  
-  h2 {
-    margin-bottom: 10px;
+
+  span {
+    font-size: 20px;
+    color: #ffffff;
+    font-weight: lighter;
   }
-  
-  img {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-  }
-  
-  .details {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 10px;
-    padding: 10px;
-    border-top: 1px solid #ddd;
-  }
-  
-  p {
-    text-align: center;
-  }
-  
+  gap: 40px;
+  cursor: pointer;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.mat-bt {
+  font-size: 14px;
+  color: #dfb370 !important;
+  background-color: #64696c;
+  font-weight: bolder;
+  border-radius: 15px;
+  width: 100px;
+}
+
+.TextHead {
+  font-size: 36px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.views-container {
+  display: flex;
+  justify-content: center;
+}
+
+.view-item {
+  text-align: center;
+  margin: 0 10px;
+}
+
+.view-item img {
+  width: 90%;
+  height: 80%;
+  background-position: center;
+  border-radius: 5px;
+  background-size: cover;
+  cursor: pointer;
+}
+
+.view-description {
+  font-size: 20px;
+  color: #000000;
+  display: block;
+  margin-top: 10px;
+}
+
+.custom-OrImage {
+  display: flex;
+  align-items: center;
+  padding-bottom: 100px;
+}
+
+.custom-OrImage img {
+  max-width: 100%;
+  max-height: 100%;
+  background-size: cover;
+  cursor: pointer;
+} 
+
+.profile-picture {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  // border: 1px solid #ccc;
+}
+
+.profile-picture img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}

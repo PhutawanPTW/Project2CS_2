@@ -1,14 +1,53 @@
-
-<body>
-    <div class="container">
-        <h1>Vote for Your Favorite View!</h1>
-        <div class="image-container">
-            <h2>View</h2>
-            <img src="your_image.jpg" alt="Image of a scenic view">
-            <div class="details">
-                <h3>Top 10 Rating</h3>
-                <p>Click "Vote" for your favorite view!</p>
+<mat-toolbar class="fxLayout-dark">
+    <div class="fxLayout">
+        <img logo src="assets/Image/log_View.png" alt="icon" />
+        <span>View</span>
+    </div>
+    <div *ngIf="!userLoggedIn; else loggedInTemplate">
+        <!-- Display this when the user is not logged in -->
+        <div class="button_fx">
+            <div class="logo-container">
+                <img logo src="assets/Image/top-10.png" alt="icon" />
+                <span>Top10</span>
             </div>
+            <span>Sign In</span>
+            <button mat-button class="mat-bt">Sign Up</button>
         </div>
     </div>
-</body>
+    
+    <ng-template #loggedInTemplate>
+        <!-- Display this when the user is logged in -->
+        <div class="button_fx">
+            <div class="logo-container">
+                <img logo src="assets/Image/top-10.png" alt="icon" />
+                <span>Top10</span>
+            </div>
+            <div class="logo-container">
+                <img logo src="assets/Image/image.png" alt="icon" />
+                <span>Rating</span>
+            </div>
+            <div class="profile-picture">
+                <img src="https://lh4.googleusercontent.com/proxy/9IFeoAs8c7jtGJnx13YQ8JUwJAU8AXYu4GrksK3PwypSlLWuKumItsM8gSXsPlKIjmLLhG4WHZC4CnbbmI8_3DAniJzwYFs3PBHxKh3coiPOaeXa8klssaELctSiN348_xjTFQrdRbr1IXRWoS3MG9lQm8A" alt="Profile Picture" />
+            </div>
+        </div>
+    </ng-template>    
+</mat-toolbar>
+
+<div class="TextHead">
+    <span>Click Vote for Your Favorite View!</span>
+</div>
+
+<div class="views-container">
+    <div class="view-item">
+        <img src="{{imagePath}}" alt="Left View" />
+        <span class="view-description">{{imageCredits[0]}}</span>
+    </div>
+    <div class="custom-OrImage">
+        <img src="{{OrImage }}" alt="OrImage">
+    </div>
+
+    <div class="view-item">
+        <img src="{{imagePath1}}" alt="Right View" />
+        <span class="view-description">{{imageCredits[1]}}</span>
+    </div>
+</div>
