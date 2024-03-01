@@ -24,6 +24,7 @@ export class MainComponent implements OnInit{
   imagePath1: string = 'https://cdn.pixabay.com/photo/2017/09/17/20/11/paris-2759620_1280.jpg';
   imageCredits = ['Photograph by John Doe', 'Photograph by Jane Smith'];
   OrImage: string = 'assets/Image/3724086.png';
+userLoggedIn: any;
 
   ngOnInit(): void {
     // คุณสามารถทำสิ่งอื่น ๆ ที่ต้องการทำใน OnInit ได้ตรงนี้
