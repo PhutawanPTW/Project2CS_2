@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ShareService } from '../../services/share.service';
+import { User } from '../../model/model';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
@@ -19,21 +21,22 @@ import { MatFormFieldModule } from '@angular/material/form-field';
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss',
 })
-export class MainComponent implements OnInit{
-  imagePath: string = 'https://cdn.pixabay.com/photo/2019/05/19/15/02/sea-4214277_1280.jpg';
-  imagePath1: string = 'https://cdn.pixabay.com/photo/2017/09/17/20/11/paris-2759620_1280.jpg';
-  imageCredits = ['Photograph by John Doe', 'Photograph by Jane Smith'];
-  OrImage: string = 'assets/Image/3724086.png';
-userLoggedIn: any;
+export class MainComponent implements OnInit {
+  id!: number;
+  userData: User | undefined; // Adjusted to use 'userData' property directly
+
+  constructor(private route: ActivatedRoute, protected shareData: ShareService) {}
 
   ngOnInit(): void {
-    // คุณสามารถทำสิ่งอื่น ๆ ที่ต้องการทำใน OnInit ได้ตรงนี้
+    this.route.params.subscribe((params) => {
+      this.id = +params['id'];
+      this.fetchUserData();
+    });
   }
-  constructor(private router: Router) {}
 
-  logoPath: string = 'assets/Image/log_View.png';
-
-  navigateToMain() {
-    this.router.navigate(['']);
+  async fetchUserData() {
+    await this.shareData.getUserbyId(this.id);
+    this.userData = this.shareData.userData; // Assign the value after fetching
+    console.log(this.userData?.image);
   }
 }

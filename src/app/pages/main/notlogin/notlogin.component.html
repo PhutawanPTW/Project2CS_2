@@ -3,19 +3,16 @@
         <img logo src="assets/Image/log_View.png" alt="icon" />
         <span>View</span>
     </div>
-    <div class="button_fx">
-        <div class="logo-container">
-            <img logo src="assets/Image/top-10.png" alt="icon" />
-            <span>Top10</span>
+    <div>
+        <!-- Display this when the user is not logged in -->
+        <div class="button_fx">
+            <div class="logo-container">
+                <img logo src="assets/Image/top-10.png" alt="icon" />
+                <span>Top10</span>
+            </div>
+            <span>Sign In</span>
+            <button mat-button class="mat-bt">Sign Up</button>
         </div>
-        <div class="logo-container">
-            <img logo src="assets/Image/image.png" alt="icon" />
-            <span>Rating</span>
-        </div>
-        <div class="profile-picture">
-            <img [src]="shareData.userData?.image" alt="Profile Picture" />
-        </div>
-        <p>{{shareData.userData?.username}}</p>
     </div>
 </mat-toolbar>
 

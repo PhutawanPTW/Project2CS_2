@@ -2,18 +2,18 @@
     <div class="container">
         <div class="row" style="justify-content: flex-start;">
             <p style="color: black; font-size: 36px; text-align: left; font-weight: 400;">Login to VoteView</p>
-            <p class="H_text">Email</p>
+            <p class="H_text">Email & Username</p>
             <mat-form-field class="inp" appearance="outline">
-                <mat-label>Enter your email</mat-label>
-                <input matInput type="text" id="username">
+                <mat-label>Enter your email or Username</mat-label>
+                <input matInput type="text" id="username" #user>
             </mat-form-field>
             <p class="H_text">Password</p>
             <mat-form-field class="inp" appearance="outline">
                 <mat-label>Enter your password</mat-label>
-                <input matInput type="password" id="password">
+                <input matInput type="password" id="password" #password>
             </mat-form-field>
         </div>
-        <button mat-flat-button type="submit" color="primary" class="custom-button" (click)="navigateToMain()">Login</button>
+        <button mat-flat-button type="submit" color="primary" class="custom-button" (click)="login(user.value , password.value)">Login</button>
 
 
         <p style="margin-top: 10px;">

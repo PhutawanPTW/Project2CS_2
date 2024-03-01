@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "url": "https://example.com/image1.jpg",
+    "view": "Mountain View",
+    "owner": "John Doe",
+    "score": 85
+  },
+  {
+    "id": 2,
+    "url": "https://example.com/image2.jpg",
+    "view": "Beach View",
+    "owner": "Jane Smith",
+    "score": 92
+  },
+  {
+    "id": 3,
+    "url": "https://example.com/image3.jpg",
+    "view": "City View",
+    "owner": "Bob Johnson",
+    "score": 78
+  },
+  {
+    "id": 4,
+    "url": "https://example.com/image4.jpg",
+    "view": "Forest View",
+    "owner": "Alice Brown",
+    "score": 95
+  },
+  {
+    "id": 5,
+    "url": "https://example.com/image5.jpg",
+    "view": "Desert View",
+    "owner": "Charlie White",
+    "score": 88
+  },
+  {
+    "id": 6,
+    "url": "https://example.com/image6.jpg",
+    "view": "Skyline View",
+    "owner": "Eva Green",
+    "score": 91
+  },
+  {
+    "id": 7,
+    "url": "https://example.com/image7.jpg",
+    "view": "Lake View",
+    "owner": "David Black",
+    "score": 79
+  },
+  {
+    "id": 8,
+    "url": "https://example.com/image8.jpg",
+    "view": "Island View",
+    "owner": "Grace Red",
+    "score": 87
+  },
+  {
+    "id": 9,
+    "url": "https://example.com/image9.jpg",
+    "view": "Countryside View",
+    "owner": "Frank Blue",
+    "score": 94
+  },
+  {
+    "id": 10,
+    "url": "https://example.com/image10.jpg",
+    "view": "Snowy Mountain View",
+    "owner": "Sophie Gray",
+    "score": 83
+  }
+]

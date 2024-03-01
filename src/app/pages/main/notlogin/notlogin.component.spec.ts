@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MainComponent } from './main-not-login.component';
+import { NotloginComponent } from './notlogin.component';
 
-describe('MainComponent', () => {
-  let component: MainComponent;
-  let fixture: ComponentFixture<MainComponent>;
+describe('NotloginComponent', () => {
+  let component: NotloginComponent;
+  let fixture: ComponentFixture<NotloginComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MainComponent]
+      imports: [NotloginComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(MainComponent);
+    fixture = TestBed.createComponent(NotloginComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
