@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { ApiService } from '../../../services/api-service';
 import { ShareService } from '../../../services/share.service';
 import { CommonModule } from '@angular/common';
+import { User } from '../../../model/model';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,9 @@ export class LoginComponent {
   
    
   constructor(private router: Router, protected shareData: ShareService) {
-    
+    localStorage.clear();
+    this.shareData.getUser()
+    console.log(this.shareData);
    }
 
    
@@ -26,9 +29,8 @@ export class LoginComponent {
     this.router.navigate(['/signup']);
   }
 
-  navigateToMain(id: number) {
-    this.router.navigate(['/main', id]);
-    // this.shareData.getUserbyId(id);
+  navigateToMain() {
+    this.router.navigate(['/']);
   }
 
   login(user: string, password: string) {
@@ -44,7 +46,9 @@ export class LoginComponent {
     if (foundUser) {
       console.log("User found:", foundUser);
       if (password === foundUser.password) {
-        this.navigateToMain(foundUser.userID);
+        this.navigateToMain();
+        localStorage.setItem("userID" , JSON.stringify(foundUser.userID));
+        console.log("Session ID : " + foundUser.userID + " is set on LocalStorage");
       } else {
         alert("รหัสผ่านไม่ถูกต้อง");
       }
@@ -52,4 +56,8 @@ export class LoginComponent {
       alert("ไม่มีผู้ใช้นี้อยู่ในระบบ โปรดสมัครสมาชิก");
     }
   }
+
+ 
+
+  
   }

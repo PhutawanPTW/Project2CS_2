@@ -1,40 +1,102 @@
-<mat-toolbar class="fxLayout-dark">
-    <div class="fxLayout">
+<mat-toolbar class="fxLayout-dark" *ngIf="shareData.userData!== undefined; else guestToolbar">
+    <div class="fxLayout" (click)="navigateToMain()">
         <img logo src="assets/Image/log_View.png" alt="icon" />
         <span>View</span>
     </div>
-    <div class="button_fx">
-        <div class="logo-container">
-            <img logo src="assets/Image/top-10.png" alt="icon" />
-            <span>Top10</span>
+    <div>
+        <div class="button_fx">
+            <div class="profile-picture">
+                <img logo logo (click)="navigateProfile()" src="{{shareData.userData?.image}}" alt="icon" />
+            </div>
+            <div class="logo-container">
+                <button mat-button color="basic" class="bt-span">
+                    <mat-icon class="icon-margin">emoji_events</mat-icon>
+                    Top10
+                </button>
+            </div>
+
+            <div class="logo-container">
+                <button mat-button color="basic" class="bt-span">
+                    <mat-icon class="icon-margin">star</mat-icon>
+                    Rating
+                </button>
+            </div>
+            <button mat-flat-button type="submit" color="basic" class="mat-bt logout" (click)="navigateToLogin()">
+                <mat-icon>exit_to_app</mat-icon>
+                Logout
+            </button>
+
         </div>
-        <div class="logo-container">
-            <img logo src="assets/Image/image.png" alt="icon" />
-            <span>Rating</span>
-        </div>
-        <div class="profile-picture">
-            <img [src]="shareData.userData?.image" alt="Profile Picture" />
-        </div>
-        <p>{{shareData.userData?.username}}</p>
     </div>
 </mat-toolbar>
 
+<<<<<<< HEAD
 <div class="TextHead">
     <span>Click Vote for Your Favorite View!</span>111558
     554faga
 </div>
+=======
+<ng-template #guestToolbar>
+    <mat-toolbar class="fxLayout-dark">
+        <div class="fxLayout">
+            <img logo src="assets/Image/log_View.png" alt="icon" />
+            <span>View</span>
+        </div>
+        <div class="button_fx">
+            <div class="profile-picture">
+                <img logo src="../../../assets/Image/catavatar.png" alt="icon" />
+            </div>
+            <div class="logo-container">
+                <button mat-button color="basic" class="bt-span">
+                    <mat-icon class="icon-margin">emoji_events</mat-icon>
+                    Top10
+                </button>
+            </div>
+>>>>>>> 33753b1 (new commit)
 
-<!-- <div class="views-container">
-    <div class="view-item">
-        <img src="{{imagePath}}" alt="Left View" />
-        <span class="view-description">{{imageCredits[0]}}</span>
-    </div>
-    <div class="custom-OrImage">
-        <img src="{{OrImage }}" alt="OrImage">
-    </div>
+            <div class="logo-container">
+                <button mat-button color="basic" class="bt-span">
+                    <mat-icon class="icon-margin">star</mat-icon>
+                    Rating
+                </button>
+            </div>
 
-    <div class="view-item">
-        <img src="{{imagePath1}}" alt="Right View" />
-        <span class="view-description">{{imageCredits[1]}}</span>
+            <button mat-flat-button type="submit" class="login" color="basic" (click)="navigateToLogin()">
+                <mat-icon class="icon-margin">login</mat-icon>
+                Sign In
+            </button>
+
+            <button mat-flat-button type="submit" class="signout" color="basic" (click)="navigateToSignUp()">
+                <mat-icon class="icon-margin">person_add</mat-icon>
+                Sign Up
+            </button>
+        </div>
+    </mat-toolbar>
+</ng-template>
+
+<div class="vote-con">
+    <h1>Click Vote for Your Favorite View</h1>
+    <div class="img-con">
+        <div class="item">
+            <img src="https://s359.kapook.com/r/600/auto/pagebuilder/87ab33ae-8dca-487d-ac86-779086de65e0.jpg" alt="">
+            <h3>
+                view by putawan
+                <mat-icon style="color: red;">favorite</mat-icon>
+                100
+            </h3>
+        </div>
+        <div>
+            <!-- <h3 style="padding: 0 20px;">OR</h3> -->
+        </div>
+        <div class="item">
+            <img src="https://s359.kapook.com/r/600/auto/pagebuilder/87ab33ae-8dca-487d-ac86-779086de65e0.jpg" alt="">
+            <h3>
+                view by putawan
+                <mat-icon style="color: red;">favorite</mat-icon>
+                100
+            </h3>
+        </div>
+        <div>
+        </div>
     </div>
-</div> -->
+</div>

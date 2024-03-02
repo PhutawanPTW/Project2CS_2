@@ -2,12 +2,13 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './pages/main/login/login.component';
 import { SignUpComponent } from './pages/main/sign-up/sign-up.component';
 import { MainComponent } from './pages/main/main.component';
-import { NotloginComponent } from './pages/main/notlogin/notlogin.component';
+import { ProfileComponent } from './pages/main/profile/profile.component';
+import { Top10Component } from './pages/main/top10/top10.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch: 'full' }, // Redirect empty path to login
+  { path: '', component: MainComponent}, // Redirect empty path to login
   { path: 'signup', component: SignUpComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'main', component:  NotloginComponent},
-  { path: 'main/:id', component: MainComponent },
+  { path: 'profile', component: ProfileComponent },
+  { path: 'top10', component: Top10Component },
 ];

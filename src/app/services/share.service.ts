@@ -8,21 +8,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class ShareService {
 
-  constructor(protected api: ApiService, private http: HttpClient, private router: Router) {
-    this.getUser();
-  }
+  constructor(protected api: ApiService, private http: HttpClient, private router: Router) {}
 
   public users: User[] = [];
   public userData: User | undefined;
 
   async getUser() {
-    this.users = [];
-    this.users = await this.api.getUser();
-  }
-
-  async getUserbyId(id: number) {
-    this.userData = undefined;
-    this.userData = await this.api.getUserbyId(id);
+    this.users = await this.api.getUser() || [];
   }
 
   async register(body: Register) {
@@ -32,4 +24,5 @@ export class ShareService {
     if (confirm("ลงทะเบียนสำเร็จ เข้าสู่หน้าล็อกอิน?")) 
     this.router.navigate(['/login']);
   }
+
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,9 +13,12 @@ import { Register, User } from '../../../model/model';
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.scss',
 })
-export class SignUpComponent {
+export class SignUpComponent implements OnInit{
   constructor(private router: Router, protected shareData: ShareService) {
-    
+    this.shareData.getUser()
+  }
+  ngOnInit(): void {
+    this.clearData();
   }
 
   protected requestBody! : Register;
@@ -76,5 +79,9 @@ export class SignUpComponent {
       return true;
     }
     return false;
+  }
+
+  clearData(){
+    this.shareData.userData = undefined;
   }
 }

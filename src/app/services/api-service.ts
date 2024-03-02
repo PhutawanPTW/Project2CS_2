@@ -12,6 +12,8 @@ export class ApiService{
 
   private url :string;
   users : User[] =[];
+  userData: User | undefined;
+
   constructor(private constant : Constant , private http : HttpClient)  {
     this.url = this.constant.API_ENDPOINT;
     console.log(this.url);
@@ -27,10 +29,10 @@ export class ApiService{
 
   public async getUserbyId(userId : number){
     const response = await lastValueFrom(
-      this.http.get<User>(`${this.url}/users/${userId}`));
-      // console.log(response);
-    return response
+      this.http.get(`${this.url}/users/${userId}`));
+    return response as User
   }
+
 
   public async register(body : Register) {
     const requestBody = {
@@ -51,10 +53,6 @@ export class ApiService{
       throw error;
     }
   }
-
-  
-
-  
 }
 
   
