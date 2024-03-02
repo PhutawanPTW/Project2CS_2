@@ -13,12 +13,15 @@
                 <input matInput type="password" id="password" #password>
             </mat-form-field>
         </div>
-        <button mat-flat-button type="submit" color="primary" class="custom-button" (click)="login(user.value , password.value)">Login</button>
-        <button mat-flat-button type="submit"  color="warn" class="guest" (click)="navigateToMain()">Continued As Guest</button>
+        <div *ngIf="loginError" style="color: red; padding-top: 10px; transition: all 0.3s ease;">{{ loginError }}</div>
 
+        <button mat-flat-button type="submit" color="primary" class="custom-button"
+            (click)="login(user.value, password.value)">Login</button>
+        <button mat-flat-button type="submit" color="warn" class="guest" (click)="navigateToMain()">Continued As
+            Guest</button>
 
         <p style="margin-top: 10px;">
-            Don't you have an account? 
+            Don't you have an account?
             <a (click)="navigateToSignUp()" class="sign-up-link">Sign up</a>
         </p>
     </div>

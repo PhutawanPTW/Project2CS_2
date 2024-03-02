@@ -16,15 +16,14 @@ import { User } from '../../../model/model';
   styleUrl: './login.component.scss',
 })
 export class LoginComponent {
-  
-   
+  loginError: string = '';
+
   constructor(private router: Router, protected shareData: ShareService) {
     localStorage.clear();
-    this.shareData.getUser()
+    this.shareData.getUser();
     console.log(this.shareData);
-   }
+  }
 
-   
   navigateToSignUp() {
     this.router.navigate(['/signup']);
   }
@@ -34,30 +33,28 @@ export class LoginComponent {
   }
 
   login(user: string, password: string) {
-    if (user.trim() === "" || password === "") {
-      alert("โปรดกรอกชื่อผู้ใช้และรหัสผ่านให้ถูกต้อง");
+    if (user.trim() === '' || password === '') {
+      this.loginError = 'Please fill in both username and password.';
       return;
     }
-  
-    const foundUser = this.shareData.users.find(userData =>
-      user === userData.username || user === userData.email
+
+    const foundUser = this.shareData.users.find(
+      (userData) => user === userData.username || user === userData.email
     );
-  
+
     if (foundUser) {
-      console.log("User found:", foundUser);
+      console.log('User found:', foundUser);
       if (password === foundUser.password) {
         this.navigateToMain();
-        localStorage.setItem("userID" , JSON.stringify(foundUser.userID));
-        console.log("Session ID : " + foundUser.userID + " is set on LocalStorage");
+        localStorage.setItem('userID', JSON.stringify(foundUser.userID));
+        console.log(
+          'Session ID : ' + foundUser.userID + ' is set on LocalStorage'
+        );
       } else {
-        alert("รหัสผ่านไม่ถูกต้อง");
+        this.loginError = 'Incorrect password.';
       }
     } else {
-      alert("ไม่มีผู้ใช้นี้อยู่ในระบบ โปรดสมัครสมาชิก");
+      this.loginError = 'User not found.';
     }
   }
-
- 
-
-  
-  }
+}
