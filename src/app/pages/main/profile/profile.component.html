@@ -1,1 +1,93 @@
-<p>profile works!</p>
+<mat-toolbar class="fxLayout-dark">
+    <div class="fxLayout" (click)="navigateToMain()">
+        <img logo src="assets/Image/log_View.png" alt="icon" />
+        <span>View</span>
+    </div>
+    <div>
+        <div class="button_fx">
+            <div class="profile-picture">
+                <img logo (click)="navigateProfile()" src="{{shareData.userData?.image}}" alt="icon" />
+            </div>
+            <div class="logo-container">
+                <button mat-button color="basic" class="bt-span">
+                    <mat-icon class="icon-margin">emoji_events</mat-icon>
+                    Top10
+                </button>
+            </div>
+
+            <div class="logo-container">
+                <button mat-button color="basic" class="bt-span">
+                    <mat-icon class="icon-margin">star</mat-icon>
+                    Rating
+                </button>
+            </div>
+            <button mat-flat-button type="submit" color="basic" class="mat-bt logout" (click)="navigateToLogin()">
+                <mat-icon>exit_to_app</mat-icon>
+                Logout
+            </button>
+
+        </div>
+    </div>
+</mat-toolbar>
+
+<div class="vote-con">
+    <h1>User Profile</h1>
+    <div class="img-con">
+        <div class="item">
+            <img class="logo" src="../../../../assets/Image/user_icon_149329.png" alt="image">
+            <div class="detail">
+                <span class="Username">Phutawan</span>
+                <div class="user-info">
+                    <img class="icon_img" src="../../../../assets/Image/image.png">
+                    <span class="pic_count">5 รูป</span>
+                </div>
+                <span class="follow">Follow Us : {{url}}</span>
+            </div>
+            <div class="buttons">
+                <button mat-stroked-button color="#384D6C" class="custom-button">Upload New Photo</button>
+                <button mat-flat-button color="#384D6C" class="custom-button">Edit Profile</button>
+            </div>
+        </div>
+    </div>
+    <hr style="margin-top: 20px; border: 1px solid #384D6C; border-radius: 20px;">
+    <!-- <h3 style="padding: 0 20px;">OR</h3> -->
+
+    <div class="item">
+        <div class="user-p">
+            <img class="icon_u" src="../../../../assets/Image/gallery.png">
+            <span class="pic_co">Picture by นาย A ถ่ายภาพสวย</span>
+        </div>
+        <div class="buttons">
+            <button mat-flat-button color="warn">
+                <mat-icon>delete</mat-icon>
+                Delete
+            </button>
+        </div>
+    </div>
+    <div class="image_user">
+        <div class="container">
+            <div class="pro">
+                <!-- <p>Sasithon_Nutty</p> -->
+            </div>
+            <div class="picvote1">
+                <div class="image-wrapper">
+                    <img src="../../../../assets/Image/castle-3175321_960_720.jpg" alt="ภาพที่ 1">
+                </div>
+                <div class="image-wrapper">
+                    <img src="../../../../assets/Image/castle-3175321_960_720.jpg" alt="ภาพที่ 2">
+                </div>
+                <div class="image-wrapper">
+                    <img src="../../../../assets/Image/castle-3175321_960_720.jpg" alt="ภาพที่ 3">
+                </div>
+                <div class="image-wrapper">
+                    <img src="../../../../assets/Image/castle-3175321_960_720.jpg" alt="ภาพที่ 4">
+                </div>
+                <div class="image-wrapper">
+                    <img src="../../../../assets/Image/castle-3175321_960_720.jpg" alt="ภาพที่ 5">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+</div>
