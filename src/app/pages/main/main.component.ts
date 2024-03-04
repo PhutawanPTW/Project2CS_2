@@ -9,7 +9,7 @@ import { User } from '../../model/model';
 import { ApiService } from '../../services/api-service';
 import { ShareService } from '../../services/share.service';
 import { Router } from '@angular/router';
-import {MatIconModule} from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-main',
@@ -19,7 +19,8 @@ import {MatIconModule} from '@angular/material/icon';
     MatButtonModule,
     CommonModule,
     MatInputModule,
-    MatFormFieldModule,MatIconModule
+    MatFormFieldModule,
+    MatIconModule,
   ],
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss',
@@ -33,17 +34,33 @@ export class MainComponent implements OnInit {
   ) {}
 
   id: any;
+  currentImageIndex: number = 0;
 
   async ngOnInit() {
     this.clearData();
     this.id = localStorage.getItem('userID');
     this.loadData();
+    this.loadImages();
   }
   async loadData() {
     this.shareData.userData = await this.api.getUserbyId(this.id);
     localStorage.setItem('userData', JSON.stringify(this.shareData.userData));
     console.log(this.shareData.userData);
   }
+
+  async loadImages() {
+    await this.shareData.getImage();
+
+    // เรียงลำดับอาร์เรย์ของรูปภาพให้เป็นลำดับสุ่ม
+    this.shareData.images = await this.shareData.shuffleArray(this.shareData.images);
+  }
+
+  changeImage() {
+    // เพิ่มค่า currentImageIndex เพื่อแสดงเซ็ตรูปภาพถัดไป
+    this.currentImageIndex = (this.currentImageIndex + 2) % (this.shareData.images.length - 1);
+  }
+
+  
 
   navigateToMain() {
     this.router.navigate(['/']);

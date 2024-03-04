@@ -69,26 +69,15 @@
 <div class="vote-con">
     <h1>Click Vote for Your Favorite View</h1>
     <div class="img-con">
-        <div class="item">
-            <img src="https://s359.kapook.com/r/600/auto/pagebuilder/87ab33ae-8dca-487d-ac86-779086de65e0.jpg" alt="">
+        <div *ngFor="let image of shareData.images?.slice(currentImageIndex, currentImageIndex + 2); let i = index"
+            (click)="changeImage()">
+            <img [src]="image.url" alt="">
             <h3>
-                view by putawan
+                view by
                 <mat-icon style="color: red;">favorite</mat-icon>
-                100
+                0
             </h3>
-        </div>
-        <div>
-            <!-- <h3 style="padding: 0 20px;">OR</h3> -->
-        </div>
-        <div class="item">
-            <img src="https://s359.kapook.com/r/600/auto/pagebuilder/87ab33ae-8dca-487d-ac86-779086de65e0.jpg" alt="">
-            <h3>
-                view by putawan
-                <mat-icon style="color: red;">favorite</mat-icon>
-                100
-            </h3>
-        </div>
-        <div>
         </div>
     </div>
+
 </div>

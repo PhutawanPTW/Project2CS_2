@@ -12,3 +12,11 @@ export interface Register {
   password: string,
   email: string
 }
+
+export interface imageUpload {
+  imageID: number;
+  url: string;
+  uploadDate: Date;
+  count: number;
+  userID: number;
+}

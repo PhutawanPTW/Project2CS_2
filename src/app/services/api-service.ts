@@ -2,7 +2,7 @@ import { Injectable, OnInit } from '@angular/core';
 import { Constant } from '../config/constaint';
 import { HttpClient } from '@angular/common/http';
 import { lastValueFrom } from 'rxjs';
-import { Register, User } from '../model/model';
+import { Register, User, imageUpload } from '../model/model';
 
 
 @Injectable({
@@ -24,6 +24,11 @@ export class ApiService{
     const response = await lastValueFrom(
       this.http.get<User[]>(`${this.url}/users`));
       // console.log(response);
+    return response
+  }
+  public async getImage(){
+    const response = await lastValueFrom(
+      this.http.get<imageUpload[]>(`${this.url}/images`));
     return response
   }
 

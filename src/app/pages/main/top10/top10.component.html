@@ -3,16 +3,27 @@
         <img logo src="assets/Image/log_View.png" alt="icon" />
         <span>View</span>
     </div>
-    <div>
-        <div class="button_fx">
-            <div class="logo-container">
-                <img logo (click)="navigateProfile()" src="{{shareData.userData.image}}" alt="icon" />
-                <span (click)="navigateTomain()">Vote</span>
-                <span>Rating</span>
-                <button mat-button style="background-color: red;" (click)="navigateToLogin()">Sign out</button>
-            </div>
+    <div class="button_fx">
+        <div class="profile-picture">
+            <img logo (click)="navigateProfile()" src="{{shareData.userData?.image}}" alt="icon" />
         </div>
-sgshshs
+        <div class="logo-container">
+            <button (click)="navigateTop()" mat-button color="basic" class="bt-span">
+                <mat-icon class="icon-margin">emoji_events</mat-icon>
+                Top10
+            </button>
+        </div>
+
+        <div class="logo-container">
+            <button mat-button color="basic" class="bt-span">
+                <mat-icon class="icon-margin">star</mat-icon>
+                Rating
+            </button>
+        </div>
+        <button mat-flat-button type="submit" color="basic" class="mat-bt logout" (click)="navigateToLogin()">
+            <mat-icon>exit_to_app</mat-icon>
+            Logout
+        </button>
     </div>
 </mat-toolbar>
 
@@ -20,9 +31,10 @@ sgshshs
     <h1>Top 10 most voted scenic views.</h1>
     <div class="img-grid">
         <div class="item" *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8,9,10]">
-            <img [src]="'https://s359.kapook.com/r/600/auto/pagebuilder/87ab33ae-8dca-487d-ac86-779086de65e0.jpg'" alt="">
+            <img [src]="'https://s359.kapook.com/r/600/auto/pagebuilder/87ab33ae-8dca-487d-ac86-779086de65e0.jpg'"
+                alt="">
             <h2>putawan</h2>
-          </div>
+        </div>
     </div>
 </div>
 
@@ -32,17 +44,33 @@ sgshshs
             <img logo src="assets/Image/log_View.png" alt="icon" />
             <span>View</span>
         </div>
-        <div>
-            <div class="button_fx">
-                <div class="logo-container">
-                    <img logo (click)="navigateProfile()" src="../../../../assets/Image/guest.png" alt="icon" />
-                    <span (click)="navigateTomain()">Vote</span>
-                    <span>Rating</span>
-                    <button mat-button style="background-color: #07d600;"
-                        (click)="navigateToLogin()">Sign in</button>
-                </div>
+        <div class="button_fx">
+            <div class="profile-picture">
+                <img logo (click)="navigateTomain()" src="../../../assets/Image/catavatar.png" alt="icon" />
+            </div>
+            <div class="logo-container">
+                <button (click)="navigateTop()" mat-button color="basic" class="bt-span">
+                    <mat-icon class="icon-margin">emoji_events</mat-icon>
+                    Top10
+                </button>
             </div>
 
+            <div class="logo-container">
+                <button mat-button color="basic" class="bt-span">
+                    <mat-icon class="icon-margin">star</mat-icon>
+                    Rating
+                </button>
+            </div>
+
+            <button mat-flat-button type="submit" class="login" color="basic" (click)="navigateToLogin()">
+                <mat-icon class="icon-margin">login</mat-icon>
+                Sign In
+            </button>
+
+            <button mat-flat-button type="submit" class="signout" color="basic" (click)="navigateToSignUp()">
+                <mat-icon class="icon-margin">person_add</mat-icon>
+                Sign Up
+            </button>
         </div>
     </mat-toolbar>
 </ng-template>

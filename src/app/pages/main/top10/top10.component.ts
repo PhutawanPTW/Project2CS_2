@@ -8,37 +8,46 @@ import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../services/api-service';
 import { ShareService } from '../../../services/share.service';
-
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-top10',
   standalone: true,
-  imports: [MatToolbarModule,
+  imports: [
+    MatToolbarModule,
     MatButtonModule,
     CommonModule,
     MatInputModule,
-    MatFormFieldModule,],
+    MatFormFieldModule,MatIconModule
+  ],
   templateUrl: './top10.component.html',
-  styleUrl: './top10.component.scss'
+  styleUrl: './top10.component.scss',
 })
 export class Top10Component implements OnInit {
-
-  constructor(private route: ActivatedRoute, protected shareData: ShareService , protected api : ApiService , private router : Router) {}
+  constructor(
+    private route: ActivatedRoute,
+    protected shareData: ShareService,
+    protected api: ApiService,
+    private router: Router
+  ) {}
 
   id: any;
 
-
   async ngOnInit() {
     this.clearData();
-    this.id = localStorage.getItem("userID");
+    this.id = localStorage.getItem('userID');
     this.loadData();
   }
-  async loadData(){
+  async loadData() {
     this.shareData.userData = await this.api.getUserbyId(this.id);
-    localStorage.setItem("userData" , JSON.stringify(this.shareData.userData));
+    localStorage.setItem('userData', JSON.stringify(this.shareData.userData));
     console.log(this.shareData.userData);
-
   }
+
+  navigateTop() {
+    this.router.navigate(['/top10']);
+  }
+  
 
   navigateToSignUp() {
     this.router.navigate(['/signup']);
@@ -49,7 +58,7 @@ export class Top10Component implements OnInit {
     this.router.navigate(['/login']);
     this.clearData();
   }
-  navigateTomain() {;
+  navigateTomain() {
     this.router.navigate(['/']);
   }
 
@@ -57,10 +66,7 @@ export class Top10Component implements OnInit {
     this.router.navigate(['/profile']);
   }
 
-  clearData(){
+  clearData() {
     this.shareData.userData = undefined;
   }
-
- 
 }
-
