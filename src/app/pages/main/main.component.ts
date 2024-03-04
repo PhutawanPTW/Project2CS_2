@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ActivatedRoute } from '@angular/router';
-import { User } from '../../model/model';
+import { User, imageUpload } from '../../model/model';
 import { ApiService } from '../../services/api-service';
 import { ShareService } from '../../services/share.service';
 import { Router } from '@angular/router';
@@ -34,7 +34,8 @@ export class MainComponent implements OnInit {
   ) {}
 
   id: any;
-  currentImageIndex: number = 0;
+  leftImage: any;
+  rightImage: any;
 
   async ngOnInit() {
     this.clearData();
@@ -49,18 +50,30 @@ export class MainComponent implements OnInit {
   }
 
   async loadImages() {
-    await this.shareData.getImage();
+    const images = await this.api.getImage();
 
-    // เรียงลำดับอาร์เรย์ของรูปภาพให้เป็นลำดับสุ่ม
-    this.shareData.images = await this.shareData.shuffleArray(this.shareData.images);
+    if (images && images.length >= 2) {
+      this.shuffleImages(images);
+    } else {
+      console.error('Not enough images returned from the API.');
+      // Handle this case based on your requirements
+    }
   }
 
-  changeImage() {
-    // เพิ่มค่า currentImageIndex เพื่อแสดงเซ็ตรูปภาพถัดไป
-    this.currentImageIndex = (this.currentImageIndex + 2) % (this.shareData.images.length - 1);
+  shuffleImages(images: any[]) {
+    for (let i = images.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [images[i], images[j]] = [images[j], images[i]];
+    }
+
+    this.leftImage = images[0];
+    this.rightImage = images[1];
   }
 
-  
+  reshuffleImages() {
+    // Trigger reshuffling of images
+    this.loadImages();
+  }
 
   navigateToMain() {
     this.router.navigate(['/']);

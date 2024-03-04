@@ -67,17 +67,26 @@
 </ng-template>
 
 <div class="vote-con">
-    <h1>Click Vote for Your Favorite View</h1>
+    <h1>Click to Reshuffle Images</h1>
     <div class="img-con">
-        <div *ngFor="let image of shareData.images?.slice(currentImageIndex, currentImageIndex + 2); let i = index"
-            (click)="changeImage()">
-            <img [src]="image.url" alt="">
-            <h3>
-                view by
-                <mat-icon style="color: red;">favorite</mat-icon>
-                0
-            </h3>
-        </div>
+      <div class="item" (click)="reshuffleImages()">
+        <img [src]="leftImage.url" alt="">
+        <h3>
+          view by
+          <mat-icon style="color: red;">favorite</mat-icon>
+          {{ leftImage?.count || 0 }}
+        </h3>
+      </div>
+      <div class="item" (click)="reshuffleImages()">
+        <img [src]="rightImage.url" alt="">
+        <h3>
+          view by
+          <mat-icon style="color: red;">favorite</mat-icon>
+          {{ rightImage?.count || 0 }}
+        </h3>
+      </div>
     </div>
-
-</div>
+  </div>
+  
+  
+  
