@@ -25,7 +25,6 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrls: ['./main.component.scss', './main.component loading.scss'],
 })
 export class MainComponent implements OnInit {
-
   constructor(
     private route: ActivatedRoute,
     protected shareData: ShareService,
@@ -51,6 +50,7 @@ export class MainComponent implements OnInit {
     this.loadData();
     this.images = await this.api.getImage();
     this.loadImages();
+    this.shuffleImages;
   }
   async loadData() {
     if (!this.id) {
@@ -62,6 +62,8 @@ export class MainComponent implements OnInit {
   }
 
   async loadImages() {
+    const images = await this.api.getImage();
+
     if (this.images && this.images.length >= 2) {
       this.canVote = true;
       const randomIndex1 = Math.floor(Math.random() * this.images.length);
@@ -73,29 +75,22 @@ export class MainComponent implements OnInit {
 
       this.leftImage = this.images[randomIndex1];
       this.rightImage = this.images[randomIndex2];
+      this.shuffleImages(images);//api
     } else {
       this.canVote = false;
       // Handle this case based on your requirements
     }
   }
 
-  // async shuffleImages(images: any[]) {
-  //   for (let i = images.length - 1; i > 0; i--) {
-  //     const j = Math.floor(Math.random() * (i + 1));
-  //     [images[i], images[j]] = [images[j], images[i]];
-  //   }
+  async shuffleImages(images: any[]) {
+    const [userData1, userData2] = await Promise.all([
+      this.api.getUserbyId(this.leftImage.userID),
+      this.api.getUserbyId(this.rightImage.userID),
+    ]);
 
-  //   this.leftImage = images[0];
-  //   this.rightImage = images[1];
-
-  //   const [userData1, userData2] = await Promise.all([
-  //     this.api.getUserbyId(this.leftImage.userID),
-  //     this.api.getUserbyId(this.rightImage.userID),
-  //   ]);
-
-  //   this.userData1 = userData1;
-  //   this.userData2 = userData2;
-  // }
+    this.userData1 = userData1;
+    this.userData2 = userData2;
+  }
 
   reshuffleImages(winner: imageUpload, loser: imageUpload) {
     console.error(winner);
@@ -152,6 +147,8 @@ export class MainComponent implements OnInit {
       imageID: loser.imageID,
       elorating: minus,
     };
+
+
     await this.api.vote(winnerBody);
     await this.api.vote(loserBody);
     await this.api.updateScore(winner.imageID, winner.count);

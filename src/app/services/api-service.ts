@@ -19,7 +19,6 @@ export class ApiService {
 
   }
 
-
   public async getUser() {
     const response = await lastValueFrom(
       this.http.get<User[]>(`${this.url}/users`));
@@ -30,6 +29,23 @@ export class ApiService {
     const response = await lastValueFrom(
       this.http.get<imageUpload[]>(`${this.url}/images`));
     return response
+  }
+
+
+  public async uploadImage(file: File): Promise<imageUpload> {
+    const formData: FormData = new FormData();
+    formData.append('file', file, file.name);
+
+    try {
+      const response = await lastValueFrom(
+        this.http.post<imageUpload>(`${this.url}/upload`, formData)
+      );
+      console.log(response);
+      return response;
+    } catch (error) {
+      console.error('Error uploading image', error);
+      throw error;
+    }
   }
 
   public async getUserbyId(userId: number) {

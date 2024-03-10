@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ActivatedRoute } from '@angular/router';
-import { User } from '../../../model/model';
+import { User, imageUpload } from '../../../model/model';
 import { ApiService } from '../../../services/api-service';
 import { ShareService } from '../../../services/share.service';
 import { Router } from '@angular/router';
@@ -26,13 +26,43 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './profile.component.scss',
 })
 export class ProfileComponent {
-  url: string = 'sgshdh'
+  url: string = 'sgshdh';
   constructor(
     private route: ActivatedRoute,
     protected shareData: ShareService,
     protected api: ApiService,
     private router: Router
   ) {}
+  id: any;
+  public images: imageUpload[] = [];
+  httpError: boolean = false;
+  imageCount: number = 0;
+  isAddIconTransformed: boolean = false;
+
+  async ngOnInit() {
+    this.clearData();
+    this.id = localStorage.getItem('userID');
+    this.loadData();
+    await this.shareData.getImage(+this.id);
+    this.images = this.shareData.images;
+    this.imageCount = this.images.length;
+  }
+
+  toggleTransform(event: MouseEvent) {
+    const icon = event.currentTarget as HTMLElement;
+    icon.classList.toggle('transformed'); // สลับคลาสที่กำหนดทั้ง transform และ background-color
+  }
+
+  async loadData() {
+    if (!this.id) {
+      return;
+    }
+    this.shareData.userData = await this.api.getUserbyId(this.id);
+
+    localStorage.setItem('userData', JSON.stringify(this.shareData.userData));
+    console.log(this.shareData.userData);
+  }
+
   navigateToMain() {
     this.router.navigate(['/']);
   }

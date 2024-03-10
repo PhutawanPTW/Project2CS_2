@@ -34,12 +34,12 @@
     <h1>User Profile</h1>
     <div class="img-con">
         <div class="item">
-            <img class="logo" src="../../../../assets/Image/user_icon_149329.png" alt="image">
+            <img class="logo" src="{{shareData.userData?.image}}" alt="image">
             <div class="detail">
-                <span class="Username">Phutawan</span>
+                <span class="Username">{{shareData.userData?.username}}</span>
                 <div class="user-info">
                     <img class="icon_img" src="../../../../assets/Image/image.png">
-                    <span class="pic_count">5 รูป</span>
+                    <span class="pic_count">{{ imageCount }} รูป</span>
                 </div>
                 <span class="follow">Follow Us : {{url}}</span>
             </div>
@@ -55,7 +55,7 @@
     <div class="item">
         <div class="user-p">
             <img class="icon_u" src="../../../../assets/Image/gallery.png">
-            <span class="pic_co">Picture by นาย A ถ่ายภาพสวย</span>
+            <span class="pic_co">Picture by {{shareData.userData?.username}}</span>
         </div>
         <div class="buttons">
             <button mat-flat-button color="warn">
@@ -66,28 +66,18 @@
     </div>
     <div class="image_user">
         <div class="container">
-            <div class="pro">
-                <!-- <p>Sasithon_Nutty</p> -->
-            </div>
             <div class="picvote1">
-                <div class="image-wrapper">
-                    <img src="../../../../assets/Image/castle-3175321_960_720.jpg" alt="ภาพที่ 1">
-                </div>
-                <div class="image-wrapper">
-                    <img src="../../../../assets/Image/castle-3175321_960_720.jpg" alt="ภาพที่ 2">
-                </div>
-                <div class="image-wrapper">
-                    <img src="../../../../assets/Image/castle-3175321_960_720.jpg" alt="ภาพที่ 3">
-                </div>
-                <div class="image-wrapper">
-                    <img src="../../../../assets/Image/castle-3175321_960_720.jpg" alt="ภาพที่ 4">
-                </div>
-                <div class="image-wrapper">
-                    <img src="../../../../assets/Image/castle-3175321_960_720.jpg" alt="ภาพที่ 5">
+                <div class="image-wrapper" *ngFor="let image of images">
+                    <div class="image-overlay">
+                        <i class="material-icons">delete</i>
+                        <!-- Change Icon -->
+                        <i class="material-icons">autorenew</i>
+                        <!-- Select Icon -->
+                        <i class="material-icons select-icon button" (click)="toggleTransform($event)">add</i>
+                    </div>
+                    <img [src]="image.url" [alt]="'ภาพที่ ' + image.imageID">
                 </div>
             </div>
         </div>
     </div>
-    
-
 </div>

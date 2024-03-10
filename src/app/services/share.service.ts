@@ -26,9 +26,19 @@ export class ShareService {
     console.log('Users:', this.users);
   }
 
-  async getImage() {
+  async getImage(userId?: number) {
     this.images = (await this.api.getImage()) || [];
     console.log('Images:', this.images);
+    if (userId) {
+      this.images = this.images.filter((image) => image.userID == userId);
+    }
+
+    console.log('Filtered Images:', this.images);
+  }
+
+  getImageCountForUser(userId: number): number {
+    const userImages = this.images.filter((image) => image.userID === userId);
+    return userImages.length;
   }
 
   async register(body: Register) {
