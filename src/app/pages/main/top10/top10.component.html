@@ -1,5 +1,5 @@
 <mat-toolbar class="fxLayout-dark" *ngIf="shareData.userData!== undefined; else guestToolbar">
-    <div class="fxLayout">
+    <div class="fxLayout" (click)="navigateToMain()">
         <img logo src="assets/Image/log_View.png" alt="icon" />
         <span>View</span>
     </div>
@@ -39,7 +39,7 @@
 </div>
 
 <ng-template #guestToolbar>
-    <mat-toolbar class="fxLayout-dark">
+    <mat-toolbar class="fxLayout-dark" (click)="navigateToMain()">
         <div class="fxLayout">
             <img logo src="assets/Image/log_View.png" alt="icon" />
             <span>View</span>

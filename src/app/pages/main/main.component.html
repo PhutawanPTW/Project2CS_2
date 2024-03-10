@@ -66,27 +66,44 @@
     </mat-toolbar>
 </ng-template>
 
-<div class="vote-con">
+<div class="vote-con" *ngIf="canVote; else waitForVote">
     <h1>Click to Reshuffle Images</h1>
-    <div class="img-con">
-      <div class="item" (click)="reshuffleImages()">
-        <img [src]="leftImage.url" alt="">
-        <h3>
-          view by
-          <mat-icon style="color: red;">favorite</mat-icon>
-          {{ leftImage?.count || 0 }}
-        </h3>
-      </div>
-      <div class="item" (click)="reshuffleImages()">
-        <img [src]="rightImage.url" alt="">
-        <h3>
-          view by
-          <mat-icon style="color: red;">favorite</mat-icon>
-          {{ rightImage?.count || 0 }}
-        </h3>
-      </div>
-    </div>
-  </div>
-  
-  
-  
+    <ng-container *ngIf="leftImage && rightImage; else loadingImages">
+        <div class="img-con">
+            <div class="item" (click)="reshuffleImages(leftImage, rightImage)">
+                <img [src]="leftImage?.url" alt="">
+                <h3>
+                    view by {{ userData1?.username || 'ไม่พบผู้ใช้' }}
+                    <mat-icon style="color: red;">favorite</mat-icon>
+                    {{ leftImage?.count || 0 || 'ไม่พบคะแนน' }}
+                </h3>
+            </div>
+            <div class="item" (click)="reshuffleImages(rightImage, leftImage)">
+                <img [src]="rightImage?.url" alt="">
+                <h3>
+                    view by {{ userData2?.username || 'ไม่พบผู้ใช้' }}
+                    <mat-icon style="color: red;">favorite</mat-icon>
+                    {{ rightImage?.count || 0 || 'ไม่พบคะแนน' }}
+                </h3>
+            </div>
+        </div>
+    </ng-container>
+    <ng-template #loadingImages>
+
+        <body>
+
+
+            <div class="loader">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </body>
+    </ng-template>
+</div>
+
+
+
+<ng-template #waitForVote>
+    <h1 style="display: flex; justify-content: center; align-items: center;">Wait For Image Cooldown</h1>
+</ng-template>

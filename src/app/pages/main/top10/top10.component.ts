@@ -47,6 +47,10 @@ export class Top10Component implements OnInit {
   navigateTop() {
     this.router.navigate(['/top10']);
   }
+
+  navigateToMain() {
+    this.router.navigate(['/']);
+  }
   
 
   navigateToSignUp() {

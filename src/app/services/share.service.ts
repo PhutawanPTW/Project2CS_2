@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api-service';
 import { HttpClient } from '@angular/common/http';
-import { Register, User, imageUpload } from '../model/model';
+import { Register, User, Vote, imageUpload } from '../model/model';
 import { ActivatedRoute, Router } from '@angular/router';
 @Injectable({
   providedIn: 'root',
 })
 export class ShareService {
-  votedImageIds: any;
   constructor(
     protected api: ApiService,
     private http: HttpClient,

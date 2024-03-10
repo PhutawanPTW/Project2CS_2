@@ -20,3 +20,9 @@ export interface imageUpload {
   count: number;
   userID: number;
 }
+
+export interface Vote {
+  elorating: number;
+  userID: number;
+  imageID: number;
+}

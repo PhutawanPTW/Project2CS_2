@@ -34,7 +34,7 @@
     padding-bottom: 5px;
     padding-right: 10px;
   }
-  gap: 25px;
+  gap: 15px;
   cursor: pointer;
 
   button {
@@ -179,4 +179,10 @@
   .item h3 mat-icon {
     padding: 0 5px;
   }
+
+  .view-by-text {
+    font-family: "Noto Sans Thai", sans-serif;
+    font-weight: bolder;
+  }
+  
 }

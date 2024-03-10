@@ -10,7 +10,6 @@ import { ApiService } from '../../services/api-service';
 import { ShareService } from '../../services/share.service';
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-
 @Component({
   selector: 'app-main',
   standalone: true,
@@ -23,9 +22,10 @@ import { MatIconModule } from '@angular/material/icon';
     MatIconModule,
   ],
   templateUrl: './main.component.html',
-  styleUrl: './main.component.scss',
+  styleUrls: ['./main.component.scss', './main.component loading.scss'],
 })
 export class MainComponent implements OnInit {
+
   constructor(
     private route: ActivatedRoute,
     protected shareData: ShareService,
@@ -36,43 +36,134 @@ export class MainComponent implements OnInit {
   id: any;
   leftImage: any;
   rightImage: any;
+  K_FACTOR: number = 32;
+  userData1: User | undefined;
+  userData2: User | undefined;
+  public images: imageUpload[] = [];
+  canVote = true;
+  isCD = true;
+  httpError: boolean = false;
+  leftImageError: boolean = false;
 
   async ngOnInit() {
     this.clearData();
     this.id = localStorage.getItem('userID');
     this.loadData();
+    this.images = await this.api.getImage();
     this.loadImages();
   }
   async loadData() {
+    if (!this.id) {
+      return;
+    }
     this.shareData.userData = await this.api.getUserbyId(this.id);
     localStorage.setItem('userData', JSON.stringify(this.shareData.userData));
     console.log(this.shareData.userData);
   }
 
   async loadImages() {
-    const images = await this.api.getImage();
+    if (this.images && this.images.length >= 2) {
+      this.canVote = true;
+      const randomIndex1 = Math.floor(Math.random() * this.images.length);
+      let randomIndex2 = Math.floor(Math.random() * this.images.length);
 
-    if (images && images.length >= 2) {
-      this.shuffleImages(images);
+      while (randomIndex2 === randomIndex1) {
+        randomIndex2 = Math.floor(Math.random() * this.images.length);
+      }
+
+      this.leftImage = this.images[randomIndex1];
+      this.rightImage = this.images[randomIndex2];
     } else {
-      console.error('Not enough images returned from the API.');
+      this.canVote = false;
       // Handle this case based on your requirements
     }
   }
 
-  shuffleImages(images: any[]) {
-    for (let i = images.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [images[i], images[j]] = [images[j], images[i]];
-    }
+  // async shuffleImages(images: any[]) {
+  //   for (let i = images.length - 1; i > 0; i--) {
+  //     const j = Math.floor(Math.random() * (i + 1));
+  //     [images[i], images[j]] = [images[j], images[i]];
+  //   }
 
-    this.leftImage = images[0];
-    this.rightImage = images[1];
+  //   this.leftImage = images[0];
+  //   this.rightImage = images[1];
+
+  //   const [userData1, userData2] = await Promise.all([
+  //     this.api.getUserbyId(this.leftImage.userID),
+  //     this.api.getUserbyId(this.rightImage.userID),
+  //   ]);
+
+  //   this.userData1 = userData1;
+  //   this.userData2 = userData2;
+  // }
+
+  reshuffleImages(winner: imageUpload, loser: imageUpload) {
+    console.error(winner);
+    if (this.isCD) {
+      this.isCD = false;
+      this.chooseRandomImages(winner);
+      this.loadImages();
+      if (this.canVote) {
+        this.calrating(winner, loser);
+      }
+
+      setTimeout(() => {
+        this.isCD = true;
+      }, 1000);
+    }
   }
 
-  reshuffleImages() {
-    // Trigger reshuffling of images
-    this.loadImages();
+  async calrating(winner: imageUpload, loser: imageUpload) {
+    // เปลี่ยน count เป็น eloRating สำหรับความชัดเจน
+    const winnerEloRating = winner.count;
+    const loserEloRating = loser.count;
+
+    const winnerExpectedScore = this.calculateExpectedScore(
+      winnerEloRating,
+      loserEloRating
+    );
+    const loserExpectedScore = this.calculateExpectedScore(
+      loserEloRating,
+      winnerEloRating
+    );
+    const plus = Math.round(this.K_FACTOR * (1 - winnerExpectedScore));
+    const minus = Math.round(this.K_FACTOR * (0 - loserExpectedScore));
+    const winnerNewRating = winnerEloRating + plus;
+    const loserNewRating = loserEloRating + minus;
+
+    // ปัดคะแนนใหม่เป็นจำนวนเต็ม
+    winner.count = Math.round(winnerNewRating);
+    loser.count = Math.round(loserNewRating);
+
+    console.log(
+      'Winner is ' + winner.imageID + ' with new Elo rating: ' + winner.count
+    );
+    console.log(
+      'Loser is ' + loser.imageID + ' with new Elo rating: ' + loser.count
+    );
+
+    const winnerBody = {
+      userID: winner.userID,
+      imageID: winner.imageID,
+      elorating: plus,
+    };
+    const loserBody = {
+      userID: loser.userID,
+      imageID: loser.imageID,
+      elorating: minus,
+    };
+    await this.api.vote(winnerBody);
+    await this.api.vote(loserBody);
+    await this.api.updateScore(winner.imageID, winner.count);
+    await this.api.updateScore(loser.imageID, loser.count);
+  }
+
+  private calculateExpectedScore(
+    playerRating: number,
+    opponentRating: number
+  ): number {
+    const exponent = (opponentRating - playerRating) / 400;
+    return 1 / (1 + Math.pow(10, exponent));
   }
 
   navigateToMain() {
@@ -99,5 +190,30 @@ export class MainComponent implements OnInit {
 
   clearData() {
     this.shareData.userData = undefined;
+  }
+
+  chooseRandomImages(select: imageUpload) {
+    const foundItemIndex = this.images.findIndex(
+      (item) => item.imageID === select.imageID
+    );
+
+    if (foundItemIndex !== -1) {
+      const chosenImage = this.images.splice(foundItemIndex, 1)[0];
+      console.log(`Removed item with imageID: ${select.imageID}`);
+      console.log('Array after removal:', this.images);
+
+      setTimeout(() => {
+        this.images.push(chosenImage);
+        console.log(`Item added back to array: ${chosenImage}`);
+        console.log('Array after addition:', this.images);
+        if (this.images.length >= 2) {
+          this.canVote = true;
+        }
+      }, 100000);
+    } else {
+      console.log(
+        `Item with imageID ${select.imageID} not found in the array.`
+      );
+    }
   }
 }
