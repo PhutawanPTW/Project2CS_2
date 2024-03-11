@@ -14,12 +14,12 @@
             </button>
         </div>
 
-        <div class="logo-container">
+        <!-- <div class="logo-container">
             <button mat-button color="basic" class="bt-span">
                 <mat-icon class="icon-margin">star</mat-icon>
                 Rating
             </button>
-        </div>
+        </div> -->
         <button mat-flat-button type="submit" color="basic" class="mat-bt logout" (click)="navigateToLogin()">
             <mat-icon>exit_to_app</mat-icon>
             Logout
@@ -28,15 +28,30 @@
 </mat-toolbar>
 
 <div class="top-container">
-    <h1>Top 10 most voted scenic views.</h1>
+    <h1 class="TextHead">Top 10 most voted scenic views.</h1>
+  
+    <!-- Display first 3 images in a row -->
     <div class="img-grid">
-        <div class="item" *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8,9,10]">
-            <img [src]="'https://s359.kapook.com/r/600/auto/pagebuilder/87ab33ae-8dca-487d-ac86-779086de65e0.jpg'"
-                alt="">
-            <h2>putawan</h2>
+      <div class="item" *ngFor="let imageUrl of imageUrls.slice(0, 3)">
+        <img [src]="imageUrl" alt="Image">
+        <div>
+            <p>View By Phutawan Score:</p>
         </div>
+      </div>
     </div>
-</div>
+  
+    <div class="leaderboard">
+        <div class="item" *ngFor="let imageUrl of imageUrls.slice(3)">
+          <img [src]="imageUrl" alt="Image">
+          <div class="text-container">
+            <div>
+                <p>View By putawan Score:</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+  </div>
 
 <ng-template #guestToolbar>
     <mat-toolbar class="fxLayout-dark" (click)="navigateToMain()">
@@ -55,12 +70,12 @@
                 </button>
             </div>
 
-            <div class="logo-container">
+            <!-- <div class="logo-container">
                 <button mat-button color="basic" class="bt-span">
                     <mat-icon class="icon-margin">star</mat-icon>
                     Rating
                 </button>
-            </div>
+            </div> -->
 
             <button mat-flat-button type="submit" class="login" color="basic" (click)="navigateToLogin()">
                 <mat-icon class="icon-margin">login</mat-icon>

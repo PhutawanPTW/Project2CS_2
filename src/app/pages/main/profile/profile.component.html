@@ -9,16 +9,9 @@
                 <img logo (click)="navigateProfile()" src="{{shareData.userData?.image}}" alt="icon" />
             </div>
             <div class="logo-container">
-                <button mat-button color="basic" class="bt-span">
+                <button (click)="navigateTop()" mat-button color="basic" class="bt-span">
                     <mat-icon class="icon-margin">emoji_events</mat-icon>
                     Top10
-                </button>
-            </div>
-
-            <div class="logo-container">
-                <button mat-button color="basic" class="bt-span">
-                    <mat-icon class="icon-margin">star</mat-icon>
-                    Rating
                 </button>
             </div>
             <button mat-flat-button type="submit" color="basic" class="mat-bt logout" (click)="navigateToLogin()">
@@ -44,38 +37,58 @@
                 <span class="follow">Follow Us : {{url}}</span>
             </div>
             <div class="buttons">
-                <button mat-stroked-button color="#384D6C" class="custom-button">Upload New Photo</button>
-                <button mat-flat-button color="#384D6C" class="custom-button">Edit Profile</button>
+                <button mat-stroked-button color="#384D6C" class="custom-button" (click)="fileInput.click()"
+                    *ngIf="!selectedFile && !uploading">Upload New Photo</button>
+                <input type="file" #fileInput style="display: none" (change)="handleFileInput($event)">
+                <button mat-flat-button color="#384D6C" class="custom-button" *ngIf="!selectedFile && !uploading">Edit
+                    Profile</button>
+                <span *ngIf="selectedFile && !uploading">{{ selectedFile.name }}</span>
+                <button mat-stroked-button color="warn" class="custom-bt" (click)="sendFile()"
+                    *ngIf="selectedFile && !uploading">
+                    <div style="display: flex; align-items: center;">
+                        <mat-icon class="mt-icon" style="color: rgb(251, 122, 75); margin-right: 5px;">send</mat-icon>
+                    </div>
+                </button>
+
+                <div *ngIf="uploading" class="Loader">
+                    <div class="text">Loading</div>
+                    <div class="dots">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <hr style="margin-top: 20px; border: 1px solid #384D6C; border-radius: 20px;">
-    <!-- <h3 style="padding: 0 20px;">OR</h3> -->
+        <hr style="margin-top: 20px; border: 1px solid #384D6C; border-radius: 20px;">
+        <!-- <h3 style="padding: 0 20px;">OR</h3> -->
 
-    <div class="item">
-        <div class="user-p">
-            <img class="icon_u" src="../../../../assets/Image/gallery.png">
-            <span class="pic_co">Picture by {{shareData.userData?.username}}</span>
+        <div class="item">
+            <div class="user-p">
+                <img class="icon_u" src="../../../../assets/Image/gallery.png">
+                <span class="pic_co">Picture by {{shareData.userData?.username}}</span>
+            </div>
+            <div class="buttons">
+                <button mat-flat-button color="warn">
+                    <mat-icon>delete</mat-icon>
+                    Delete
+                </button>
+            </div>
         </div>
-        <div class="buttons">
-            <button mat-flat-button color="warn">
-                <mat-icon>delete</mat-icon>
-                Delete
-            </button>
-        </div>
-    </div>
-    <div class="image_user">
-        <div class="container">
-            <div class="picvote1">
-                <div class="image-wrapper" *ngFor="let image of images">
-                    <div class="image-overlay">
-                        <i class="material-icons">delete</i>
-                        <!-- Change Icon -->
-                        <i class="material-icons">autorenew</i>
-                        <!-- Select Icon -->
-                        <i class="material-icons select-icon button" (click)="toggleTransform($event)">add</i>
+        <div class="image_user">
+            <div class="container">
+                <div class="picvote1">
+                    <div class="image-wrapper" *ngFor="let image of images">
+                        <div class="image-overlay">
+                            <i class="material-icons">delete_forever</i>
+                            <i class="material-icons" (click)="navigateChart()">query_stats</i>
+                            <i class="material-icons">flip_camera_android</i>
+                            <i class="material-icons select-icon button" (click)="toggleTransform($event)">add</i>
+                        </div>
+                        <img [src]="image.url" [alt]="'ภาพที่ ' + image.imageID">
                     </div>
-                    <img [src]="image.url" [alt]="'ภาพที่ ' + image.imageID">
                 </div>
             </div>
         </div>

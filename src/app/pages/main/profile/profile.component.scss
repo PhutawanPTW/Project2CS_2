@@ -182,7 +182,7 @@
 }
 
 .custom-button {
-  margin: 0 10px;
+  margin-left: 10px;
   width: 170px;
   height: 40px;
   border-color: #384d6c;
@@ -191,6 +191,15 @@
 .custom-button[mat-stroked-button] {
   color: #384d6c;
 }
+
+.custom-bt {
+  margin-left: 10px;
+  width: 25px;
+  height: 40px;
+  align-items: center;
+  color: #384d6c;
+}
+
 
 .custom-button[mat-flat-button] {
   background-color: #384d6c;
@@ -205,6 +214,19 @@
   padding-bottom: 30px;
   padding-top: 10px;
 }
+
+.file-info {
+  display: flex;
+  align-items: center;
+  color: #384D6C;
+  margin-top: 10px; /* Adjust margin as needed */
+}
+
+.file-info mat-icon {
+  margin-right: 5px; /* Adjust margin as needed */
+  font-size: 18px; /* Adjust font size as needed */
+}
+
 
 .container {
   display: flex;
@@ -284,8 +306,7 @@ i.material-icons {
   border-radius: 50%;
   padding: 5px;
   margin: 3px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  transition: color 0.2s ease, background-color 0.2s ease, transform 0.3s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, transform 0.5s ease;
 }
 
 i.material-icons:after {
@@ -303,7 +324,6 @@ i.material-icons:after {
 
 i.material-icons:hover:after {
   transform: scale(1);
-  box-shadow: 10px 0 20px rgba(0, 0, 0, 0.19), 6px 0 6px rgba(0, 0, 0, 0.23);
 }
 
 i.material-icons:nth-of-type(1) {
@@ -322,28 +342,42 @@ i.material-icons:nth-of-type(1):after {
 
 
 i.material-icons:nth-of-type(2) {
-  background-color: #ff8051;
+  background-color: #45beff;
 }
 
 i.material-icons:nth-of-type(2):hover {
-  color: #ff8051;
+  color: #45beff;
   background-color: #ffffff;
 }
 
 i.material-icons:nth-of-type(2):after {
-  border-color: #ff8051;
+  border-color: #45beff;
 }
 
 i.material-icons:nth-of-type(3) {
-  background-color: #60e18d;
+  background-color: #ff8051;
 }
 
 i.material-icons:nth-of-type(3):hover {
-  color: #60e18d;
+  color: #ff8051;
   background-color: #ffffff;
 }
 
 i.material-icons:nth-of-type(3):after {
+  border-color: #ff8051;
+}
+
+
+i.material-icons:nth-of-type(4) {
+  background-color: #60e18d;
+}
+
+i.material-icons:nth-of-type(4):hover {
+  color: #60e18d;
+  background-color: #ffffff;
+}
+
+i.material-icons:nth-of-type(4):after {
   border-color: #60e18d;
 }
 
@@ -365,4 +399,101 @@ i.material-icons:hover {
   transform: rotate(90deg);
   cursor: pointer;
   box-shadow: none;
+}
+
+.Loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  font-size: 1.5em;
+  overflow: hidden;
+}
+
+.loader .text {
+  text-transform: capitalize;
+}
+
+.Loader .dots {
+  display: flex;
+  position: relative;
+  top: 9px;
+  left: -10px;
+  width: 100px;
+  animation: dots 2s ease infinite 1s;
+}
+
+.Loader .dots div {
+  position: relative;
+  width: 5px; /* Adjusted size */
+  height: 5px; /* Adjusted size */
+  border-radius: 50%;
+  margin-right: 10px;
+  background-color: black;
+}
+
+.Loader .dots div:nth-child(1) {
+  width: 0px;
+  height: 0px;
+  margin: 4px; /* Adjusted margin */
+  margin-right: 12px; /* Adjusted margin */
+  animation: show_dot 4s ease-in-out infinite 1s;
+}
+
+.Loader .dots div:nth-child(5) {
+  background-color: transparent;
+  animation: dot_fall_left 4s linear infinite 1s;
+}
+
+.Loader .dots div:nth-child(5):before {
+  position: absolute;
+  width: 5px; /* Adjusted size */
+  height: 5px; /* Adjusted size */
+  margin-right: 10px;
+  border-radius: 50%;
+  background-color: black;
+  content: "";
+  animation: dot_fall_top 4s cubic-bezier(0.46, 0.02, 0.94, 0.54) infinite 1s;
+}
+
+@keyframes dots {
+  0% {
+      left: -10px;
+  }
+  20%, 100% {
+      left: 10px;
+  }
+}
+
+@keyframes show-dot {
+  0%, 20% {
+      width: 0px;
+      height: 0px;
+      margin: 4px; /* Adjusted margin */
+      margin-right: 12px; /* Adjusted margin */
+  }
+  30%, 100% {
+      width: 8px; /* Adjusted size */
+      height: 8px; /* Adjusted size */
+      margin: 0px;
+      margin-right: 10px;
+  }
+}
+
+@keyframes dot_fall_left {
+  0%, 5% {
+      left: 0;
+  }
+  100% {
+      left: 200px;
+  }
+}
+
+@keyframes dot_fall_top {
+  0%, 5% {
+      top: 0;
+  }
+  30%, 100% {
+      top: 50vh;
+  }
 }

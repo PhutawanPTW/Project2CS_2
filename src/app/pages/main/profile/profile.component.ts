@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
@@ -38,6 +38,8 @@ export class ProfileComponent {
   httpError: boolean = false;
   imageCount: number = 0;
   isAddIconTransformed: boolean = false;
+  selectedFile: File | undefined;
+  uploading: boolean = false;
 
   async ngOnInit() {
     this.clearData();
@@ -61,6 +63,32 @@ export class ProfileComponent {
 
     localStorage.setItem('userData', JSON.stringify(this.shareData.userData));
     console.log(this.shareData.userData);
+  }
+  handleFileInput(event: any) {
+    this.selectedFile = event.target.files[0];
+  }
+
+  async sendFile() {
+    if (!this.selectedFile) {
+      console.error('No file selected');
+      return;
+    }
+
+    try {
+      this.uploading = true; // เริ่มสถานะกำลังโหลด
+      const uploadedImage = await this.api.uploadImage(this.selectedFile);
+      console.log('Uploaded image:', uploadedImage);
+      this.selectedFile = undefined;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      // Handle error
+    } finally {
+      this.uploading = false; // สิ้นสถานะกำลังโหลด
+    }
+  }
+
+  navigateChart() {
+    this.router.navigate(['/chart']);
   }
 
   navigateToMain() {
