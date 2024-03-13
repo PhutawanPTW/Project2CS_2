@@ -2,35 +2,55 @@ import { Injectable, OnInit } from '@angular/core';
 import { Constant } from '../config/constaint';
 import { HttpClient } from '@angular/common/http';
 import { count, lastValueFrom } from 'rxjs';
-import { Register, User, Vote, imageUpload } from '../model/model';
-
+import {
+  Register,
+  Statistic,
+  User,
+  Vote,
+  imageUpload,
+  imageUser,
+} from '../model/model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ApiService {
-
   private url: string;
-  users: User[] = [];
-  userData: User | undefined;
 
   constructor(private constant: Constant, private http: HttpClient) {
     this.url = this.constant.API_ENDPOINT;
-
   }
 
   public async getUser() {
     const response = await lastValueFrom(
-      this.http.get<User[]>(`${this.url}/users`));
+      this.http.get<User[]>(`${this.url}/users`)
+    );
     // console.log(response);
-    return response
+    return response;
   }
   public async getImage() {
     const response = await lastValueFrom(
-      this.http.get<imageUpload[]>(`${this.url}/images`));
-    return response
+      this.http.get<imageUser[]>(`${this.url}/images`)
+    );
+    return response;
   }
 
+  public async gettodayrank() {
+    const response = await lastValueFrom(
+      this.http.get<imageUser[]>(`${this.url}/top/today`) // เปลี่ยน URL ตามต้องการ
+    );
+    console.log(response);
+    return response;
+  }
+
+  public async getyesterdayrank() {
+    const response = await lastValueFrom(
+      this.http.get<imageUser[]>(`${this.url}/top/yesterday`) // เปลี่ยน URL ตามต้องการ
+    );
+    console.log(response);
+    
+    return response;
+  }
 
   public async uploadImage(file: File): Promise<imageUpload> {
     const formData: FormData = new FormData();
@@ -49,18 +69,36 @@ export class ApiService {
   }
 
   public async getUserbyId(userId: number) {
-    const response = await lastValueFrom(
-      this.http.get(`${this.url}/users/${userId}`));
-    return response as User
+    if (userId) {
+      const response = await lastValueFrom(
+        this.http.get(`${this.url}/users/${userId}`)
+      );
+      return response as User;
+    } else {
+      return;
+    }
   }
 
+  public async getImagebyId(imageID: number) {
+    const response = await lastValueFrom(
+      this.http.get(`${this.url}/images/${imageID}`)
+    );
+    return response as imageUpload;
+  }
+
+  public async deleteImagebyId(imageID: number) {
+    const response = await lastValueFrom(
+      this.http.delete(`${this.url}/images/${imageID}`)
+    );
+    return response;
+  }
 
   public async register(body: Register) {
     const requestBody = {
       username: body.username,
       password: body.password,
       email: body.email,
-      type: "user",
+      type: 'user',
     };
 
     try {
@@ -79,14 +117,13 @@ export class ApiService {
     const requestBody = {
       userID: body.userID,
       imageID: body.imageID,
-      elorating: body.elorating
-    }
+      elorating: body.elorating,
+    };
 
     try {
       const response = await lastValueFrom(
         this.http.post<Vote>(`${this.url}/vote`, requestBody)
       );
-      console.log(response);
       return response;
     } catch (error) {
       console.error('เกิดข้อผิดพลาดในการส่งข้อมูล', error);
@@ -95,14 +132,24 @@ export class ApiService {
   }
 
   //ยังไม่เสร็จ
-  
+
   public updateScore(id: number, score: number) {
     let body = {
-      count : score
-    }
-    this.http.put(this.url + "/images/" + id , body).subscribe();
+      count: score,
+    };
+    this.http.put(this.url + '/images/' + id, body).subscribe();
   }
 
+  public async getStatistic(imageID: number, day: number) {
+    try {
+      const response = await lastValueFrom(
+        this.http.get<Statistic[]>(`${this.url}/statistics/${imageID}/${day}`)
+      );
+      console.log(response);
+      return response;
+    } catch (error) {
+      console.error('Error fetching statistics:', error);
+      throw error;
+    }
+  }
 }
-
-

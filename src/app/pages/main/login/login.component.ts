@@ -43,13 +43,9 @@ export class LoginComponent {
     );
 
     if (foundUser) {
-      console.log('User found:', foundUser);
       if (password === foundUser.password) {
         this.navigateToMain();
         localStorage.setItem('userID', JSON.stringify(foundUser.userID));
-        console.log(
-          'Session ID : ' + foundUser.userID + ' is set on LocalStorage'
-        );
       } else {
         this.loginError = 'Incorrect password.';
       }

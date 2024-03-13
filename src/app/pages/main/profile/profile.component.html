@@ -6,7 +6,7 @@
     <div>
         <div class="button_fx">
             <div class="profile-picture">
-                <img logo (click)="navigateProfile()" src="{{shareData.userData?.image}}" alt="icon" />
+                <img logo (click)="navigateProfile()" src="{{userData?.image}}" alt="icon" />
             </div>
             <div class="logo-container">
                 <button (click)="navigateTop()" mat-button color="basic" class="bt-span">
@@ -27,14 +27,14 @@
     <h1>User Profile</h1>
     <div class="img-con">
         <div class="item">
-            <img class="logo" src="{{shareData.userData?.image}}" alt="image">
+            <img class="logo" src="{{userData?.image}}" alt="image">
             <div class="detail">
-                <span class="Username">{{shareData.userData?.username}}</span>
+                <span class="Username">{{userData?.username}}</span>
                 <div class="user-info">
                     <img class="icon_img" src="../../../../assets/Image/image.png">
                     <span class="pic_count">{{ imageCount }} รูป</span>
                 </div>
-                <span class="follow">Follow Us : {{url}}</span>
+                <span class="follow">{{ userData?.type }}</span>
             </div>
             <div class="buttons">
                 <button mat-stroked-button color="#384D6C" class="custom-button" (click)="fileInput.click()"
@@ -71,8 +71,8 @@
                 <span class="pic_co">Picture by {{shareData.userData?.username}}</span>
             </div>
             <div class="buttons">
-                <button mat-flat-button color="warn">
-                    <mat-icon>delete</mat-icon>
+                <button mat-flat-button color="warn" (click)="deleteAllImage()">
+                
                     Delete
                 </button>
             </div>
@@ -82,10 +82,10 @@
                 <div class="picvote1">
                     <div class="image-wrapper" *ngFor="let image of images">
                         <div class="image-overlay">
-                            <i class="material-icons">delete_forever</i>
-                            <i class="material-icons" (click)="navigateChart()">query_stats</i>
+                            <i class="material-icons" (click)="deleteImage(image.imageID)">delete_forever</i>
+                            <i class="material-icons" (click)="navigateChart(image.imageID)">query_stats</i>
                             <i class="material-icons">flip_camera_android</i>
-                            <i class="material-icons select-icon button" (click)="toggleTransform($event)">add</i>
+                            <i class="material-icons select-icon button" (click)="toggleTransform(image.imageID , $event)">add</i>
                         </div>
                         <img [src]="image.url" [alt]="'ภาพที่ ' + image.imageID">
                     </div>

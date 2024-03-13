@@ -4,9 +4,9 @@
         <span>View</span>
     </div>
     <div>
-        <div class="button_fx">
+        <div class="button_fx" *ngIf="userData">
             <div class="profile-picture">
-                <img logo (click)="navigateProfile()" src="{{shareData.userData?.image}}" alt="icon" />
+                <img logo (click)="navigateProfile()" src="{{userData.image}}" alt="icon" />
             </div>
             <div class="logo-container">
                 <button mat-button color="basic" class="bt-span">
@@ -23,9 +23,10 @@
 </mat-toolbar>
 
 <div class="vote-con">
-    <h2>Picture_ID</h2>
+    <h2>ImageID {{id}}</h2>
     <div class="img-con">
         <div class="chart-container">
             <canvas id="MyChart">{{ chart }}</canvas>
         </div>
     </div>
+</div>

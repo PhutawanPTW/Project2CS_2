@@ -170,6 +170,10 @@
     transform: scale(1.03);
   }
 
+  img:active{
+    transform: scale(0.98);
+  }
+
   .item h3 {
     justify-content: center;
     display: flex;

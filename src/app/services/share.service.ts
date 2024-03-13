@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api-service';
 import { HttpClient } from '@angular/common/http';
-import { Register, User, Vote, imageUpload } from '../model/model';
+import { Register, User, Vote, imageUpload, imageUser } from '../model/model';
 import { ActivatedRoute, Router } from '@angular/router';
 @Injectable({
   providedIn: 'root',
@@ -12,28 +12,27 @@ export class ShareService {
     private http: HttpClient,
     private router: Router
   ) {
-    this.getImage();
+    // this.getImage();
   }
 
   public users: User[] = [];
-  public images: imageUpload[] = [];
+  public images: imageUser[] = [];
 
   public userData: User | undefined;
   public imageData: imageUpload | undefined;
+
+  public chartData : imageUpload | undefined;
 
   async getUser() {
     this.users = (await this.api.getUser()) || [];
     console.log('Users:', this.users);
   }
 
-  async getImage(userId?: number) {
+  async getImage(userId : number) {
     this.images = (await this.api.getImage()) || [];
-    console.log('Images:', this.images);
     if (userId) {
       this.images = this.images.filter((image) => image.userID == userId);
     }
-
-    console.log('Filtered Images:', this.images);
   }
 
   getImageCountForUser(userId: number): number {

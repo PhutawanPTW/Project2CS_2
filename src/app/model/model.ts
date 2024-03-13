@@ -8,9 +8,9 @@ export interface User {
 }
 
 export interface Register {
-  username: string,
-  password: string,
-  email: string
+  username: string;
+  password: string;
+  email: string;
 }
 
 export interface imageUpload {
@@ -21,8 +21,27 @@ export interface imageUpload {
   userID: number;
 }
 
+export interface imageUser {
+  count: number;
+  imageID: number;
+  url: string;
+  voteScore: number;
+  username: number;
+  userID: number;
+  rankToday: number;
+  rankYesterday: number;
+  rankDifferent: number;
+}
+
 export interface Vote {
   elorating: number;
   userID: number;
+  imageID: number;
+}
+
+export interface Statistic {
+  id: number;
+  voteScore: number;
+  date: Date;
   imageID: number;
 }

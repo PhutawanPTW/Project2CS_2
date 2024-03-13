@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ActivatedRoute } from '@angular/router';
-import { User, imageUpload } from '../../../model/model';
+import { Statistic, User, imageUpload } from '../../../model/model';
 import { ApiService } from '../../../services/api-service';
 import { ShareService } from '../../../services/share.service';
 import { Router } from '@angular/router';
@@ -26,35 +26,36 @@ import Chart from 'chart.js/auto';
   templateUrl: './chart.component.html',
   styleUrl: './chart.component.scss',
 })
+
 export class ChartComponent {
   public chart: any;
+  images: imageUpload[] = [];
+  statistics: Statistic[] = [];
+  httpError: boolean = false;
+  userID : any;
+  userData! : User;
+  id : any;
+  data : any;
   constructor(
     private route: ActivatedRoute,
     protected shareData: ShareService,
     protected api: ApiService,
     private router: Router
-  ) {}
-  id: any;
-  public images: imageUpload[] = [];
-  httpError: boolean = false;
+  ) { }
 
   async ngOnInit() {
-    this.clearData();
-    this.id = localStorage.getItem('userID');
-    this.loadData();
-    await this.shareData.getImage(+this.id);
+    this.checkLogin();
+    const userDataString = localStorage.getItem("userData");
+    this.userData = userDataString ? JSON.parse(userDataString) : null;
+    this.id = this.route.snapshot.paramMap.get('id');
+    this.statistics = await this.api.getStatistic(this.id, 7);
     this.createChart();
-    this.images = this.shareData.images;
   }
 
-  async loadData() {
-    if (!this.id) {
-      return;
+  checkLogin(){
+    if(!localStorage.getItem("userData") || !localStorage.getItem("userID")){
+      this.navigateToLogin();
     }
-    this.shareData.userData = await this.api.getUserbyId(this.id);
-
-    localStorage.setItem('userData', JSON.stringify(this.shareData.userData));
-    console.log(this.shareData.userData);
   }
 
   navigateToMain() {
@@ -73,6 +74,7 @@ export class ChartComponent {
 
   clearData() {
     this.shareData.userData = undefined;
+    this.shareData.chartData = undefined;
   }
 
   navigateProfile() {
@@ -83,27 +85,86 @@ export class ChartComponent {
     this.router.navigate(['/top10']);
   }
 
-  createChart(){
+  // createChart() {
+  //   const date = new Date();
+  //   const year = date.getFullYear();
+  //   const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
+  //   const day = date.getDate().toString().padStart(2, '0');
+  //   this.chart = new Chart("MyChart", {
+  //     type: 'line',
+  //     data: {
+  //       labels: [`${year}-${month}-${day}`, `${year}-${month}-${day}`, '2022-05-12', '2022-05-13',
+  //         '2022-05-15', '2022-05-16', '2022-05-17',],
+  //       datasets: [
+  //         {
+  //           label: "Score",
+  //           data: ['467', '576', '572', '79', '92',
+  //             '574', '573', '576'],
+  //           backgroundColor: 'blue'
+  //         },
+  //       ]
+  //     },
+  //     options: {
+  //       aspectRatio: 0.6,
+  //       responsive: true,
+  //       maintainAspectRatio: false,
+  //     },
+
+  //   });
+  // }
+
+  createChart() {
+    const currentDate = new Date();
+    const labels = [];
+    const data = [];
+  
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(currentDate);
+      date.setDate(currentDate.getDate() - i);
+  
+      labels.push(`${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`);
+    }
+  
+    for (let i = 0; i < 7; i++) {
+      const currentDateMinusDays = new Date(currentDate);
+      currentDateMinusDays.setDate(currentDate.getDate() - i);
+  
+      // Check if there is data for the current date
+      const dataForCurrentDate = this.statistics.find(statistic => {
+        const statisticDate = new Date(statistic.date); // Assuming 'date' is the property in your Statistic model that contains the date
+        return (
+          currentDateMinusDays.getFullYear() === statisticDate.getFullYear() &&
+          currentDateMinusDays.getMonth() === statisticDate.getMonth() &&
+          currentDateMinusDays.getDate() === statisticDate.getDate()
+        );
+      });
+  
+      if (dataForCurrentDate) {
+        data.push(dataForCurrentDate.voteScore);
+      } else {
+        data.push(0);
+      }
+    }
+  
+    console.error(data);
   
     this.chart = new Chart("MyChart", {
       type: 'line',
-
       data: {
-        labels: ['2022-05-10', '2022-05-11', '2022-05-12','2022-05-13',
-								  '2022-05-15', '2022-05-16','2022-05-17', ], 
-	       datasets: [
+        labels: labels,
+        datasets: [
           {
             label: "Score",
-            data: ['467','576', '572', '79', '92',
-								 '574', '573', '576'],
+            data: Array.from(data).reverse(),
             backgroundColor: 'blue'
           },
         ]
       },
       options: {
-        aspectRatio:2.5
-      }
-      
+        aspectRatio: 0.6,
+        responsive: true,
+        maintainAspectRatio: false,
+      },
     });
   }
 }

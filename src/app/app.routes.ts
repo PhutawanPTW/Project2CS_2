@@ -12,5 +12,5 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'profile', component: ProfileComponent },
   { path: 'top10', component: Top10Component },
-  { path: 'chart', component: ChartComponent },
+  { path: 'chart/:id', component: ChartComponent },
 ];

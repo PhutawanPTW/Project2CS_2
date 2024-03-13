@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ActivatedRoute } from '@angular/router';
-import { User, imageUpload } from '../../model/model';
+import { User, imageUpload, imageUser } from '../../model/model';
 import { ApiService } from '../../services/api-service';
 import { ShareService } from '../../services/share.service';
 import { Router } from '@angular/router';
@@ -38,51 +38,65 @@ export class MainComponent implements OnInit {
   K_FACTOR: number = 32;
   userData1: User | undefined;
   userData2: User | undefined;
-  public images: imageUpload[] = [];
+  public images: imageUser[] = [];
   canVote = true;
   isCD = true;
   httpError: boolean = false;
   leftImageError: boolean = false;
 
   async ngOnInit() {
-    this.clearData();
     this.id = localStorage.getItem('userID');
-    this.loadData();
+    this.checkData();
     this.images = await this.api.getImage();
+    console.log(this.images);
     this.loadImages();
-    this.shuffleImages;
+  }
+
+  checkData() {
+    const userDataString = localStorage.getItem('userData');
+    if (userDataString) {
+      try {
+        const userData = JSON.parse(userDataString);
+        this.shareData.userData = userData;
+      } catch (error) {
+        console.error('Error parsing userData from localStorage:', error);
+        this.loadData();
+      }
+    } else {
+      this.loadData();
+    }
   }
   async loadData() {
     if (!this.id) {
       return;
     }
-    this.shareData.userData = await this.api.getUserbyId(this.id);
-    localStorage.setItem('userData', JSON.stringify(this.shareData.userData));
-    console.log(this.shareData.userData);
+    if (!localStorage.getItem('userData')) {
+      this.shareData.userData = await this.api.getUserbyId(this.id);
+      localStorage.setItem('userData', JSON.stringify(this.shareData.userData));
+      console.log(this.shareData.userData);
+    }
   }
 
   async loadImages() {
-    const images = await this.api.getImage();
-
     if (this.images && this.images.length >= 2) {
       this.canVote = true;
       const randomIndex1 = Math.floor(Math.random() * this.images.length);
       let randomIndex2 = Math.floor(Math.random() * this.images.length);
 
-      while (randomIndex2 === randomIndex1) {
+      while (
+        randomIndex2 === randomIndex1 ||
+        this.images[randomIndex2].imageID === this.leftImage?.imageID ||
+        this.images[randomIndex2].imageID === this.rightImage?.imageID
+      ) {
         randomIndex2 = Math.floor(Math.random() * this.images.length);
       }
 
       this.leftImage = this.images[randomIndex1];
       this.rightImage = this.images[randomIndex2];
-      this.shuffleImages(images);//api
     } else {
       this.canVote = false;
-      // Handle this case based on your requirements
     }
-  }
 
-  async shuffleImages(images: any[]) {
     const [userData1, userData2] = await Promise.all([
       this.api.getUserbyId(this.leftImage.userID),
       this.api.getUserbyId(this.rightImage.userID),
@@ -92,11 +106,10 @@ export class MainComponent implements OnInit {
     this.userData2 = userData2;
   }
 
-  reshuffleImages(winner: imageUpload, loser: imageUpload) {
-    console.error(winner);
+  reshuffleImages(winner: imageUser, loser: imageUser) {
     if (this.isCD) {
       this.isCD = false;
-      this.chooseRandomImages(winner);
+      this.chooseRandomImages(winner, loser);
       this.loadImages();
       if (this.canVote) {
         this.calrating(winner, loser);
@@ -108,8 +121,7 @@ export class MainComponent implements OnInit {
     }
   }
 
-  async calrating(winner: imageUpload, loser: imageUpload) {
-    // เปลี่ยน count เป็น eloRating สำหรับความชัดเจน
+  async calrating(winner: imageUser, loser: imageUser) {
     const winnerEloRating = winner.count;
     const loserEloRating = loser.count;
 
@@ -148,11 +160,10 @@ export class MainComponent implements OnInit {
       elorating: minus,
     };
 
-
-    await this.api.vote(winnerBody);
-    await this.api.vote(loserBody);
     await this.api.updateScore(winner.imageID, winner.count);
     await this.api.updateScore(loser.imageID, loser.count);
+    await this.api.vote(winnerBody);
+    await this.api.vote(loserBody);
   }
 
   private calculateExpectedScore(
@@ -189,28 +200,44 @@ export class MainComponent implements OnInit {
     this.shareData.userData = undefined;
   }
 
-  chooseRandomImages(select: imageUpload) {
-    const foundItemIndex = this.images.findIndex(
-      (item) => item.imageID === select.imageID
-    );
+  countdownDuration: number = 10; // Set the countdown duration in seconds
+countdownInterval: any;
 
-    if (foundItemIndex !== -1) {
-      const chosenImage = this.images.splice(foundItemIndex, 1)[0];
-      console.log(`Removed item with imageID: ${select.imageID}`);
-      console.log('Array after removal:', this.images);
+chooseRandomImages(select: imageUser, select2: imageUser) {
+  const foundItemIndex = this.images.findIndex(
+    (item) => item.imageID === select.imageID
+  );
 
-      setTimeout(() => {
-        this.images.push(chosenImage);
-        console.log(`Item added back to array: ${chosenImage}`);
-        console.log('Array after addition:', this.images);
-        if (this.images.length >= 2) {
+  const foundItemIndex2 = this.images.findIndex(
+    (item) => item.imageID === select2.imageID
+  );
+
+  if (foundItemIndex !== -1 && foundItemIndex2 !== -1) {
+    const chosenImage = this.images.splice(foundItemIndex, 1)[0];
+    const chosenImage2 = this.images.splice(foundItemIndex2, 1)[0];
+    console.log('Removed images after vote:', chosenImage, chosenImage2);
+    console.log('all', this.images);
+
+    if (this.images.length === 2) {
+      this.canVote = false; // Disable further voting when only two images are left
+
+      // Start the countdown
+      this.countdownInterval = setInterval(() => {
+        this.countdownDuration--;
+
+        if (this.countdownDuration === 0) {
+          clearInterval(this.countdownInterval);
+          this.images.push(chosenImage, chosenImage2);
+          console.log('Array after addition:', this.images);
           this.canVote = true;
+          this.countdownDuration = 10; // Reset the countdown duration
         }
-      }, 100000);
-    } else {
-      console.log(
-        `Item with imageID ${select.imageID} not found in the array.`
-      );
+      }, 1000);
     }
+  } else {
+    console.log(
+      `Item with imageID ${select.imageID} or ${select2.imageID} not found in the array.`
+    );
   }
+}
 }

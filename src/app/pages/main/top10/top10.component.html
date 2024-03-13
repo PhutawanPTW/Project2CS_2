@@ -1,4 +1,4 @@
-<mat-toolbar class="fxLayout-dark" *ngIf="shareData.userData!== undefined; else guestToolbar">
+<mat-toolbar class="fxLayout-dark" *ngIf="userData!== undefined; else guestToolbar">
     <div class="fxLayout" (click)="navigateToMain()">
         <img logo src="assets/Image/log_View.png" alt="icon" />
         <span>View</span>
@@ -29,29 +29,29 @@
 
 <div class="top-container">
     <h1 class="TextHead">Top 10 most voted scenic views.</h1>
-  
+
     <!-- Display first 3 images in a row -->
     <div class="img-grid">
-      <div class="item" *ngFor="let imageUrl of imageUrls.slice(0, 3)">
-        <img [src]="imageUrl" alt="Image">
-        <div>
-            <p>View By Phutawan Score:</p>
-        </div>
-      </div>
-    </div>
-  
-    <div class="leaderboard">
-        <div class="item" *ngFor="let imageUrl of imageUrls.slice(3)">
-          <img [src]="imageUrl" alt="Image">
-          <div class="text-container">
+        <div class="item" *ngFor="let imageUrl of rank.slice(0, 3)">
+            <img [src]="imageUrl.url" alt="Image">
             <div>
-                <p>View By putawan Score:</p>
+                <p>View By {{imageUrl?.username}} Score: {{imageUrl.voteScore}}</p>
             </div>
-          </div>
         </div>
-      </div>
-      
-  </div>
+    </div>
+
+    <div class="leaderboard">
+        <div class="item" *ngFor="let imageUrl of rank.slice(3)">
+            <img [src]="imageUrl.url" alt="Image">
+            <div class="text-container">
+                <div>
+                    <p>View By {{imageUrl?.username}} Score: {{imageUrl.voteScore}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
 
 <ng-template #guestToolbar>
     <mat-toolbar class="fxLayout-dark" (click)="navigateToMain()">
