@@ -118,16 +118,6 @@ export class Top10Component implements OnInit {
         return 'assets/Image/null.png';
     }
   }
-
-  getArrowIcon(rankDiff: number): string {
-    if (rankDiff > 0) {
-      return 'assets/Image/arrow-up.png'; // แสดง icon arrow-up.png ถ้า rank เพิ่มขึ้น
-    } else if (rankDiff < 0) {
-      return 'assets/Image/arrow-down.png'; // แสดง icon arrow-down.png ถ้า rank ลดลง
-    } else {
-      return ''; // หรือคุณสามารถส่งค่าว่างหรือรูปที่ไม่มีในกรณีที่ rankDiff เป็น 0
-    }
-  }
   
 
   navigateTop() {

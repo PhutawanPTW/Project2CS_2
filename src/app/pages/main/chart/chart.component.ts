@@ -26,34 +26,34 @@ import Chart from 'chart.js/auto';
   templateUrl: './chart.component.html',
   styleUrl: './chart.component.scss',
 })
-
 export class ChartComponent {
   public chart: any;
   images: imageUpload[] = [];
   statistics: Statistic[] = [];
   httpError: boolean = false;
-  userID : any;
-  userData! : User;
-  id : any;
-  data : any;
+  userID: any;
+  userData!: User;
+  id: any;
+  data: any;
+
   constructor(
     private route: ActivatedRoute,
     protected shareData: ShareService,
     protected api: ApiService,
     private router: Router
-  ) { }
+  ) {}
 
   async ngOnInit() {
     this.checkLogin();
-    const userDataString = localStorage.getItem("userData");
+    const userDataString = localStorage.getItem('userData');
     this.userData = userDataString ? JSON.parse(userDataString) : null;
     this.id = this.route.snapshot.paramMap.get('id');
     this.statistics = await this.api.getStatistic(this.id, 7);
     this.createChart();
   }
 
-  checkLogin(){
-    if(!localStorage.getItem("userData") || !localStorage.getItem("userID")){
+  checkLogin() {
+    if (!localStorage.getItem('userData') || !localStorage.getItem('userID')) {
       this.navigateToLogin();
     }
   }
@@ -117,20 +117,24 @@ export class ChartComponent {
     const currentDate = new Date();
     const labels = [];
     const data = [];
-  
+    const pointRadius = 5;
     for (let i = 6; i >= 0; i--) {
       const date = new Date(currentDate);
       date.setDate(currentDate.getDate() - i);
-  
-      labels.push(`${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`);
+
+      labels.push(
+        `${date.getFullYear()}-${(date.getMonth() + 1)
+          .toString()
+          .padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
+      );
     }
-  
+
     for (let i = 0; i < 7; i++) {
       const currentDateMinusDays = new Date(currentDate);
       currentDateMinusDays.setDate(currentDate.getDate() - i);
-  
+
       // Check if there is data for the current date
-      const dataForCurrentDate = this.statistics.find(statistic => {
+      const dataForCurrentDate = this.statistics.find((statistic) => {
         const statisticDate = new Date(statistic.date); // Assuming 'date' is the property in your Statistic model that contains the date
         return (
           currentDateMinusDays.getFullYear() === statisticDate.getFullYear() &&
@@ -138,27 +142,29 @@ export class ChartComponent {
           currentDateMinusDays.getDate() === statisticDate.getDate()
         );
       });
-  
+
       if (dataForCurrentDate) {
         data.push(dataForCurrentDate.voteScore);
       } else {
         data.push(0);
       }
     }
-  
+
     console.error(data);
-  
-    this.chart = new Chart("MyChart", {
+
+    this.chart = new Chart('MyChart', {
       type: 'line',
       data: {
         labels: labels,
         datasets: [
           {
-            label: "Score",
+            label: 'Score',
             data: Array.from(data).reverse(),
-            backgroundColor: 'blue'
+            backgroundColor: 'blue',
+            pointStyle: 'circle',
+            pointRadius: pointRadius,
           },
-        ]
+        ],
       },
       options: {
         aspectRatio: 0.6,

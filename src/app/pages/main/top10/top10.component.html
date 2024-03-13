@@ -14,12 +14,6 @@
             </button>
         </div>
 
-        <!-- <div class="logo-container">
-            <button mat-button color="basic" class="bt-span">
-                <mat-icon class="icon-margin">star</mat-icon>
-                Rating
-            </button>
-        </div> -->
         <button mat-flat-button type="submit" color="basic" class="mat-bt logout" (click)="navigateToLogin()">
             <mat-icon>exit_to_app</mat-icon>
             Logout
@@ -35,26 +29,39 @@
                 <img [src]="imageUrl.url" alt="Image">
                 <div class="rank-icon-container">
                     <img [src]="getRankIconImages(i + 1)" alt="Rank Icon">
-                    <img [src]="getArrowIcon(imageUrl.rankDiff)" alt="Arrow Icon">
+                    <!-- <img [src]="getArrowIcon(imageUrl.rankDiff)" alt="Arrow Icon"> -->
                 </div>
             </div>
-            <div>
-                <p>View By {{imageUrl.username}} Score: {{imageUrl.voteScore}} Rank: {{imageUrl.rankDiff}}</p>
+            <div class="text-container">
+                Score: <span class="vote-score">{{imageUrl.voteScore}}</span>
+                <div class="arrow-icon">
+                    <img *ngIf="imageUrl.rankDiff > 0" src="../../../../assets/Image/arrow-up.png" alt="Rank Up">
+                    <img *ngIf="imageUrl.rankDiff < 0" src="../../../../assets/Image/arrow-down.png" alt="Rank Down">
+                    <img *ngIf="imageUrl.rankDiff == 0" src="../../../../assets/Image/NoUpDown.png" alt="No Rank">
+                </div>
+                <span class="rank-ud"
+                    [ngStyle]="{'color': imageUrl.rankDiff < 0 ? 'red' : (imageUrl.rankDiff > 0 ? 'green' : 'blue')}">{{imageUrl.rankDiff}}</span>
             </div>
         </div>
     </div>
 
     <div class="leaderboard">
         <div class="item" *ngFor="let imageUrl of rank.slice(3,10); let i = index">
-            <img [src]="imageUrl.url" alt="Image">
-            <div class="rank-container">
-                <img [src]="getRankIconImages(i + 4)" alt="Rank Icon">
-                <img [src]="getArrowIcon(imageUrl.rankDiff)" alt="Arrow Icon">
+            <div class="image-container">
+                <img [src]="imageUrl.url" alt="Image">
+                <div class="rank-container">
+                    <img [src]="getRankIconImages(i + 4)" alt="Rank Icon">
+                </div>
             </div>
             <div class="text-container">
-                <div>
-                    <p>View By {{imageUrl.username}} Score: {{imageUrl.voteScore}} Rank: {{imageUrl.rankDiff}}</p>
+                Score: <span class="vote-score">{{imageUrl.voteScore}}</span>
+                <div class="arrow-icon">
+                    <img *ngIf="imageUrl.rankDiff > 0" src="../../../../assets/Image/arrow-up.png" alt="Rank Up">
+                    <img *ngIf="imageUrl.rankDiff < 0" src="../../../../assets/Image/arrow-down.png" alt="Rank Down">
+                    <img *ngIf="imageUrl.rankDiff == 0" src="../../../../assets/Image/NoUpDown.png" alt="No Rank">
                 </div>
+                <span class="rank-ud"
+                    [ngStyle]="{'color': imageUrl.rankDiff < 0 ? 'red' : (imageUrl.rankDiff > 0 ? 'green' : 'blue')}">{{imageUrl.rankDiff}}</span>
             </div>
         </div>
     </div>
@@ -77,13 +84,6 @@
                     Top10
                 </button>
             </div>
-
-            <!-- <div class="logo-container">
-                <button mat-button color="basic" class="bt-span">
-                    <mat-icon class="icon-margin">star</mat-icon>
-                    Rating
-                </button>
-            </div> -->
 
             <button mat-flat-button type="submit" class="login" color="basic" (click)="navigateToLogin()">
                 <mat-icon class="icon-margin">login</mat-icon>

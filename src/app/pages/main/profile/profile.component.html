@@ -63,7 +63,6 @@
             </div>
         </div>
         <hr style="margin-top: 20px; border: 1px solid #384D6C; border-radius: 20px;">
-        <!-- <h3 style="padding: 0 20px;">OR</h3> -->
 
         <div class="item">
             <div class="user-p">
@@ -72,7 +71,6 @@
             </div>
             <div class="buttons">
                 <button mat-flat-button color="warn" (click)="deleteAllImage()">
-                
                     Delete
                 </button>
             </div>
@@ -85,7 +83,8 @@
                             <i class="material-icons" (click)="deleteImage(image.imageID)">delete_forever</i>
                             <i class="material-icons" (click)="navigateChart(image.imageID)">query_stats</i>
                             <i class="material-icons">flip_camera_android</i>
-                            <i class="material-icons select-icon button" (click)="toggleTransform(image.imageID , $event)">add</i>
+                            <i class="material-icons select-icon button"
+                                (click)="toggleTransform(image.imageID , $event)">add</i>
                         </div>
                         <img [src]="image.url" [alt]="'ภาพที่ ' + image.imageID">
                     </div>
