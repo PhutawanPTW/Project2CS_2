@@ -39,7 +39,7 @@ export class ApiService {
     const response = await lastValueFrom(
       this.http.get<imageUser[]>(`${this.url}/top/today`) // เปลี่ยน URL ตามต้องการ
     );
-    console.log(response);
+    // console.log(response);
     return response;
   }
 
@@ -47,7 +47,7 @@ export class ApiService {
     const response = await lastValueFrom(
       this.http.get<imageUser[]>(`${this.url}/top/yesterday`) // เปลี่ยน URL ตามต้องการ
     );
-    console.log(response);
+    // console.log(response);
     
     return response;
   }

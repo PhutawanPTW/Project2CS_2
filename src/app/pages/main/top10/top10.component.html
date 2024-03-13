@@ -29,29 +29,36 @@
 
 <div class="top-container">
     <h1 class="TextHead">Top 10 most voted scenic views.</h1>
-
-    <!-- Display first 3 images in a row -->
     <div class="img-grid">
-        <div class="item" *ngFor="let imageUrl of rank.slice(0, 3)">
+        <div class="item" *ngFor="let imageUrl of rank.slice(0, 3); let i = index">
+          <div class="image-container">
             <img [src]="imageUrl.url" alt="Image">
+            <div class="rank-icon-container">
+              <img [src]="getRankIconImages(i + 1)" alt="Rank Icon">
+            </div>
+          </div>
+          <div>
+            <p>View By {{imageUrl.username}} Score: {{imageUrl.voteScore}}</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="leaderboard">
+        <div class="item" *ngFor="let imageUrl of rank.slice(3,10); let i = index">
+            <img [src]="imageUrl.url" alt="Image">
+            <div class="rank-container">
+              <img [src]="getRankIconImages(i + 4)" alt="Rank Icon">
+            </div>
+          <div class="text-container">
             <div>
-                <p>View By {{imageUrl?.username}} Score: {{imageUrl.voteScore}}</p>
+              <p>View By {{imageUrl.username}} Score: {{imageUrl.voteScore}}</p>
             </div>
+          </div>
         </div>
-    </div>
-
-    <div class="leaderboard">
-        <div class="item" *ngFor="let imageUrl of rank.slice(3)">
-            <img [src]="imageUrl.url" alt="Image">
-            <div class="text-container">
-                <div>
-                    <p>View By {{imageUrl?.username}} Score: {{imageUrl.voteScore}}</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
+      </div>
+      
 </div>
+
 
 <ng-template #guestToolbar>
     <mat-toolbar class="fxLayout-dark" (click)="navigateToMain()">

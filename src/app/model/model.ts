@@ -26,11 +26,19 @@ export interface imageUser {
   imageID: number;
   url: string;
   voteScore: number;
-  username: number;
+  username: string;
   userID: number;
   rankToday: number;
   rankYesterday: number;
   rankDifferent: number;
+}
+
+export interface rankID {
+  imageID : number;
+  rankDiff : number;
+  url : string;
+  username : string;
+  voteScore : number;
 }
 
 export interface Vote {
