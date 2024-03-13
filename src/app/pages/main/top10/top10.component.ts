@@ -45,7 +45,6 @@ export class Top10Component implements OnInit {
     this.id = localStorage.getItem('userID');
     this.loadData();
     this.getTopImageData();
-    
   }
 
   async getTopImageData() {
@@ -58,37 +57,45 @@ export class Top10Component implements OnInit {
 
   getRank(today: imageUser[], yesterday: imageUser[]): void {
     for (let i = 0; i < today.length; i++) {
-        const todayImage = today[i];
-        const yesterdayImage = yesterday.find(img => img.imageID === todayImage.imageID); // Use '===' for comparison
-        if (yesterdayImage) {
-            const difference = yesterdayImage.rankYesterday - todayImage.rankToday; // Calculate the rank difference
-            const rankNow: rankID = {
-                imageID: todayImage.imageID,
-                rankDiff: difference,
-                url : todayImage.url,
-                username : todayImage.username,
-                voteScore : todayImage.voteScore
-            };
-            this.rank.push(rankNow);
-        } else {
-            // Handle if the image is new today and was not present yesterday
-            const rankNow: rankID = {
-                imageID: todayImage.imageID,
-                rankDiff: 0,
-                url : todayImage.url,
-                username : todayImage.username,
-                voteScore : todayImage.voteScore
-            };
-            this.rank.push(rankNow);
-        }
+      const todayImage = today[i];
+      const yesterdayImage = yesterday.find(
+        (img) => img.imageID === todayImage.imageID
+      ); // Use '===' for comparison
+      if (yesterdayImage) {
+        const difference = yesterdayImage.rankYesterday - todayImage.rankToday; // Calculate the rank difference
+        const rankNow: rankID = {
+          imageID: todayImage.imageID,
+          rankDiff: difference,
+          url: todayImage.url,
+          username: todayImage.username,
+          voteScore: todayImage.count,
+        };
+        this.rank.push(rankNow);
+      } else {
+        // Handle if the image is new today and was not present yesterday
+        const rankNow: rankID = {
+          imageID: todayImage.imageID,
+          rankDiff: 0,
+          url: todayImage.url,
+          username: todayImage.username,
+          voteScore: todayImage.count,
+        };
+        this.rank.push(rankNow);
+      }
     }
-    console.log(this.rank); 
-}
+    console.log(this.rank);
+  }
+
+  async loadData() {
+    this.shareData.userData = await this.api.getUserbyId(this.id);
+    localStorage.setItem('userData', JSON.stringify(this.shareData.userData));
+    console.log(this.shareData.userData);
+  }
 
   getRankIconImages(rankNumber: number): string {
     switch (rankNumber) {
       case 1:
-        return 'assets/Image/gold-medal.png'; 
+        return 'assets/Image/gold-medal.png';
       case 2:
         return 'assets/Image/2nd-place.png';
       case 3:
@@ -112,11 +119,16 @@ export class Top10Component implements OnInit {
     }
   }
 
-  async loadData() {
-    this.shareData.userData = await this.api.getUserbyId(this.id);
-    localStorage.setItem('userData', JSON.stringify(this.shareData.userData));
-    console.log(this.shareData.userData);
+  getArrowIcon(rankDiff: number): string {
+    if (rankDiff > 0) {
+      return 'assets/Image/arrow-up.png'; // แสดง icon arrow-up.png ถ้า rank เพิ่มขึ้น
+    } else if (rankDiff < 0) {
+      return 'assets/Image/arrow-down.png'; // แสดง icon arrow-down.png ถ้า rank ลดลง
+    } else {
+      return ''; // หรือคุณสามารถส่งค่าว่างหรือรูปที่ไม่มีในกรณีที่ rankDiff เป็น 0
+    }
   }
+  
 
   navigateTop() {
     this.router.navigate(['/top10']);

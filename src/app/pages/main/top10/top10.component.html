@@ -31,32 +31,33 @@
     <h1 class="TextHead">Top 10 most voted scenic views.</h1>
     <div class="img-grid">
         <div class="item" *ngFor="let imageUrl of rank.slice(0, 3); let i = index">
-          <div class="image-container">
-            <img [src]="imageUrl.url" alt="Image">
-            <div class="rank-icon-container">
-              <img [src]="getRankIconImages(i + 1)" alt="Rank Icon">
+            <div class="image-container">
+                <img [src]="imageUrl.url" alt="Image">
+                <div class="rank-icon-container">
+                    <img [src]="getRankIconImages(i + 1)" alt="Rank Icon">
+                    <img [src]="getArrowIcon(imageUrl.rankDiff)" alt="Arrow Icon">
+                </div>
             </div>
-          </div>
-          <div>
-            <p>View By {{imageUrl.username}} Score: {{imageUrl.voteScore}}</p>
-          </div>
+            <div>
+                <p>View By {{imageUrl.username}} Score: {{imageUrl.voteScore}} Rank: {{imageUrl.rankDiff}}</p>
+            </div>
         </div>
-      </div>
-      
-      <div class="leaderboard">
+    </div>
+
+    <div class="leaderboard">
         <div class="item" *ngFor="let imageUrl of rank.slice(3,10); let i = index">
             <img [src]="imageUrl.url" alt="Image">
             <div class="rank-container">
-              <img [src]="getRankIconImages(i + 4)" alt="Rank Icon">
+                <img [src]="getRankIconImages(i + 4)" alt="Rank Icon">
+                <img [src]="getArrowIcon(imageUrl.rankDiff)" alt="Arrow Icon">
             </div>
-          <div class="text-container">
-            <div>
-              <p>View By {{imageUrl.username}} Score: {{imageUrl.voteScore}}</p>
+            <div class="text-container">
+                <div>
+                    <p>View By {{imageUrl.username}} Score: {{imageUrl.voteScore}} Rank: {{imageUrl.rankDiff}}</p>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
-      
+    </div>
 </div>
 
 
