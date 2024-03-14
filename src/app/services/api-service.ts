@@ -52,13 +52,14 @@ export class ApiService {
     return response;
   }
 
-  public async uploadImage(file: File): Promise<imageUpload> {
-    const formData: FormData = new FormData();
-    formData.append('file', file, file.name);
+  public async uploadImage(file: File, userID: string): Promise<imageUpload> {
+    const formData = new FormData();
+    formData.append('filename', file, file.name);
+    formData.append('userID', userID);
 
     try {
       const response = await lastValueFrom(
-        this.http.post<imageUpload>(`${this.url}/upload`, formData)
+        this.http.post<imageUpload>(`${this.url}/upload/${userID}`, formData)
       );
       console.log(response);
       return response;

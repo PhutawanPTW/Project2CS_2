@@ -89,26 +89,26 @@ export class ProfileComponent {
 
   handleFileInput(event: any) {
     this.selectedFile = event.target.files[0];
-  }
+}
 
-  async sendFile() {
+async sendFile(userID: string) {
     if (!this.selectedFile) {
-      console.error('No file selected');
-      return;
+        console.error('No file selected');
+        return;
     }
 
     try {
-      this.uploading = true; // เริ่มสถานะกำลังโหลด
-      const uploadedImage = await this.api.uploadImage(this.selectedFile);
-      console.log('Uploaded image:', uploadedImage);
-      this.selectedFile = undefined;
+        this.uploading = true; // เริ่มสถานะกำลังโหลด
+        const uploadedImage = await this.api.uploadImage(this.selectedFile, userID);
+        console.log('Uploaded image:', uploadedImage);
+        this.selectedFile = undefined;
     } catch (error) {
-      console.error('Error uploading image:', error);
-      // Handle error
+        console.error('Error uploading image:', error);
+        // Handle error
     } finally {
-      this.uploading = false; // สิ้นสถานะกำลังโหลด
+        this.uploading = false; // สิ้นสถานะกำลังโหลด
     }
-  }
+}
 
   async deleteImage(id: number) {
     const userConfirmed = window.confirm("ต้องการที่จะลบรูปภาพนี้หรือไม่?");

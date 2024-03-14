@@ -43,12 +43,12 @@
                 <button mat-flat-button color="#384D6C" class="custom-button" *ngIf="!selectedFile && !uploading">Edit
                     Profile</button>
                 <span *ngIf="selectedFile && !uploading">{{ selectedFile.name }}</span>
-                <button mat-stroked-button color="warn" class="custom-bt" (click)="sendFile()"
+                <!-- <button mat-stroked-button color="warn" class="custom-bt" (click)="sendFile()"
                     *ngIf="selectedFile && !uploading">
                     <div style="display: flex; align-items: center;">
                         <mat-icon class="mt-icon" style="color: rgb(251, 122, 75); margin-right: 5px;">send</mat-icon>
                     </div>
-                </button>
+                </button> -->
 
                 <div *ngIf="uploading" class="Loader">
                     <div class="text">Loading</div>
