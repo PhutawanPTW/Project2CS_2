@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 
 export class Constant {
   public readonly API_ENDPOINT: string = 'https://project2cs-back.onrender.com';
-}sfsg
+}
 // async shuffleImages() {
 //   const [userData1, userData2] = await Promise.all([
 //     this.api.getUserbyId(this.leftImage.userID),
