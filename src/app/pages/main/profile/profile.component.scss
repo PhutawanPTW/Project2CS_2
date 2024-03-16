@@ -260,6 +260,10 @@
   border-radius: 5px;
 }
 
+.single-image .image-wrapper {
+  flex-grow: 0.5;
+}
+
 .image-wrapper:hover {
   filter: brightness(90%);
 }

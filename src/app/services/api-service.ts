@@ -48,7 +48,7 @@ export class ApiService {
       this.http.get<imageUser[]>(`${this.url}/top/yesterday`) // เปลี่ยน URL ตามต้องการ
     );
     // console.log(response);
-    
+
     return response;
   }
 
@@ -132,8 +132,6 @@ export class ApiService {
     }
   }
 
-  //ยังไม่เสร็จ
-
   public updateScore(id: number, score: number) {
     let body = {
       count: score,
@@ -151,6 +149,17 @@ export class ApiService {
     } catch (error) {
       console.error('Error fetching statistics:', error);
       throw error;
+    }
+  }
+
+  public async getStatisticbyId(image: number) {
+    if (image) {
+      const response = await lastValueFrom(
+        this.http.get(`${this.url}/statistics/${image}`)
+      );
+      return response as Statistic;
+    } else {
+      return;
     }
   }
 }

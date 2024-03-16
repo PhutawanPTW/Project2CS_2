@@ -21,7 +21,7 @@ export class LoginComponent {
   constructor(private router: Router, protected shareData: ShareService) {
     localStorage.clear();
     this.shareData.getUser();
-    console.log(this.shareData);
+    // console.log(this.shareData);
   }
 
   navigateToSignUp() {

@@ -48,7 +48,7 @@ export class MainComponent implements OnInit {
     this.id = localStorage.getItem('userID');
     this.checkData();
     this.images = await this.api.getImage();
-    console.log(this.images);
+    // console.log(this.images);
     this.loadImages();
   }
 
@@ -73,7 +73,7 @@ export class MainComponent implements OnInit {
     if (!localStorage.getItem('userData')) {
       this.shareData.userData = await this.api.getUserbyId(this.id);
       localStorage.setItem('userData', JSON.stringify(this.shareData.userData));
-      console.log(this.shareData.userData);
+      // console.log(this.shareData.userData);
     }
   }
 
@@ -142,12 +142,12 @@ export class MainComponent implements OnInit {
     winner.count = Math.round(winnerNewRating);
     loser.count = Math.round(loserNewRating);
 
-    console.log(
-      'Winner is ' + winner.imageID + ' with new Elo rating: ' + winner.count
-    );
-    console.log(
-      'Loser is ' + loser.imageID + ' with new Elo rating: ' + loser.count
-    );
+    // console.log(
+    //   'Winner is ' + winner.imageID + ' with new Elo rating: ' + winner.count
+    // );
+    // console.log(
+    //   'Loser is ' + loser.imageID + ' with new Elo rating: ' + loser.count
+    // );
 
     const winnerBody = {
       userID: winner.userID,
@@ -215,8 +215,8 @@ chooseRandomImages(select: imageUser, select2: imageUser) {
   if (foundItemIndex !== -1 && foundItemIndex2 !== -1) {
     const chosenImage = this.images.splice(foundItemIndex, 1)[0];
     const chosenImage2 = this.images.splice(foundItemIndex2, 1)[0];
-    console.log('Removed images after vote:', chosenImage, chosenImage2);
-    console.log('all', this.images);
+    // console.log('Removed images after vote:', chosenImage, chosenImage2);
+    // console.log('all', this.images);
 
     if (this.images.length === 2) {
       this.canVote = false; // Disable further voting when only two images are left

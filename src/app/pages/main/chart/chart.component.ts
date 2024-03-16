@@ -85,54 +85,30 @@ export class ChartComponent {
     this.router.navigate(['/top10']);
   }
 
-  // createChart() {
-  //   const date = new Date();
-  //   const year = date.getFullYear();
-  //   const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
-  //   const day = date.getDate().toString().padStart(2, '0');
-  //   this.chart = new Chart("MyChart", {
-  //     type: 'line',
-  //     data: {
-  //       labels: [`${year}-${month}-${day}`, `${year}-${month}-${day}`, '2022-05-12', '2022-05-13',
-  //         '2022-05-15', '2022-05-16', '2022-05-17',],
-  //       datasets: [
-  //         {
-  //           label: "Score",
-  //           data: ['467', '576', '572', '79', '92',
-  //             '574', '573', '576'],
-  //           backgroundColor: 'blue'
-  //         },
-  //       ]
-  //     },
-  //     options: {
-  //       aspectRatio: 0.6,
-  //       responsive: true,
-  //       maintainAspectRatio: false,
-  //     },
-
-  //   });
-  // }
-
-  createChart() {
+  async createChart() {
     const currentDate = new Date();
     const labels = [];
     const data = [];
+    const point : any = await this.api.getStatisticbyId(this.id);
     const pointRadius = 5;
     for (let i = 6; i >= 0; i--) {
       const date = new Date(currentDate);
       date.setDate(currentDate.getDate() - i);
-
+  
       labels.push(
         `${date.getFullYear()}-${(date.getMonth() + 1)
           .toString()
           .padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
       );
     }
-
+  
     for (let i = 0; i < 7; i++) {
       const currentDateMinusDays = new Date(currentDate);
       currentDateMinusDays.setDate(currentDate.getDate() - i);
-
+  
+      console.log('Index:', i); // เพิ่มบรรทัดนี้เพื่อทำการล็อกค่า index
+      console.log('Current Date:', currentDateMinusDays); // ล็อกค่าวันที่ปัจจุบันที่ใช้ในการตรวจสอบ
+  
       // Check if there is data for the current date
       const dataForCurrentDate = this.statistics.find((statistic) => {
         const statisticDate = new Date(statistic.date); // Assuming 'date' is the property in your Statistic model that contains the date
@@ -142,16 +118,33 @@ export class ChartComponent {
           currentDateMinusDays.getDate() === statisticDate.getDate()
         );
       });
-
+  
+      console.log('Data for Current Date:', dataForCurrentDate); // ล็อกข้อมูลสถิติสำหรับวันที่ปัจจุบัน
+  
       if (dataForCurrentDate) {
         data.push(dataForCurrentDate.voteScore);
       } else {
-        data.push(0);
+        // If no data for the current date, fetch data from the previous day
+        const previousDate = new Date(currentDateMinusDays);
+        previousDate.setDate(currentDateMinusDays.getDate() - 1);
+        const dataFromPreviousDate = this.statistics.find((statistic) => {
+          const statisticDate = new Date(statistic.date);
+          return (
+            previousDate.getFullYear() === statisticDate.getFullYear() &&
+            previousDate.getMonth() === statisticDate.getMonth() &&
+            previousDate.getDate() === statisticDate.getDate()
+          );
+        });
+        if (dataFromPreviousDate) {
+          data.push(dataFromPreviousDate.voteScore);
+        } else {
+          data.push(point[0].voteScore);
+        }
       }
     }
-
+  
     console.error(data);
-
+  
     this.chart = new Chart('MyChart', {
       type: 'line',
       data: {

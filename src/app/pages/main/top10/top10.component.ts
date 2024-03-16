@@ -89,7 +89,7 @@ export class Top10Component implements OnInit {
   async loadData() {
     this.shareData.userData = await this.api.getUserbyId(this.id);
     localStorage.setItem('userData', JSON.stringify(this.shareData.userData));
-    console.log(this.shareData.userData);
+    // console.log(this.shareData.userData);
   }
 
   getRankIconImages(rankNumber: number): string {

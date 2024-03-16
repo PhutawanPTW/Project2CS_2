@@ -40,34 +40,34 @@ export class ProfileComponent {
   isAddIconTransformed: boolean = false;
   selectedFile: File | undefined;
   uploading: boolean = false;
-  userData : User | undefined;
-  deleteSelect : number[] = [];
+  userData: User | undefined;
+  deleteSelect: number[] = [];
   async ngOnInit() {
     this.checkLogin();
     this.setData();
     this.getImage();
   }
 
-  async getImage(){
+  async getImage() {
     await this.shareData.getImage(this.id);
     this.images = this.shareData.images;
     this.imageCount = this.images.length;
   }
 
-  setData(){
+  setData() {
     this.id = localStorage.getItem('userID');
-    const userDataString = localStorage.getItem("userData");
+    const userDataString = localStorage.getItem('userData');
     this.userData = userDataString ? JSON.parse(userDataString) : null;
   }
 
-  checkLogin(){
-    if(!localStorage.getItem("userData") || !localStorage.getItem("userID")){
+  checkLogin() {
+    if (!localStorage.getItem('userData') || !localStorage.getItem('userID')) {
       this.navigateToLogin();
     }
   }
 
-  toggleTransform(id: number , event : Event) {
-    const findIndex = this.deleteSelect.findIndex(item => item === id);
+  toggleTransform(id: number, event: Event) {
+    const findIndex = this.deleteSelect.findIndex((item) => item === id);
     const icon = event.currentTarget as HTMLElement;
     icon.classList.toggle('transformed');
     if (findIndex !== -1) {
@@ -89,57 +89,67 @@ export class ProfileComponent {
 
   handleFileInput(event: any) {
     this.selectedFile = event.target.files[0];
-}
+  }
 
-async sendFile(userID: string) {
+  async sendFile(userID: string) {
     if (!this.selectedFile) {
-        console.error('No file selected');
-        return;
+      console.error('No file selected');
+      return;
+    }
+
+    if (this.images.length >= 5) {
+      window.alert('Cannot upload more than 5 images');
+      return;
     }
 
     try {
-        this.uploading = true; // เริ่มสถานะกำลังโหลด
-        const uploadedImage = await this.api.uploadImage(this.selectedFile, userID);
-        console.log('Uploaded image:', uploadedImage);
-        this.selectedFile = undefined;
-    } catch (error) {
-        console.error('Error uploading image:', error);
-        // Handle error
-    } finally {
-        this.uploading = false; // สิ้นสถานะกำลังโหลด
-    }
+      this.uploading = true; // Start uploading state
+      const uploadedImage = await this.api.uploadImage(this.selectedFile, userID);
+      console.log('Uploaded image:', uploadedImage);
+      
+      await this.getImage();
+      
+      this.selectedFile = undefined;
+      window.alert('Image uploaded successfully');
+ } catch (error) {
+      console.error('Error uploading image:', error);
+      window.alert('Failed to upload image');
+      // Handle error
+ } finally {
+      this.uploading = false; // End uploading state
+ }
 }
 
+
   async deleteImage(id: number) {
-    const userConfirmed = window.confirm("ต้องการที่จะลบรูปภาพนี้หรือไม่?");
-    
+    const userConfirmed = window.confirm('ต้องการที่จะลบรูปภาพนี้หรือไม่?');
+
     if (userConfirmed) {
       const status = await this.api.deleteImagebyId(id);
       window.location.reload();
     } else {
-      console.log("ยกเลิกการลบรูปภาพ");
+      console.log('ยกเลิกการลบรูปภาพ');
     }
   }
 
   async deleteAllImage() {
     if (!this.deleteSelect || this.deleteSelect.length === 0) {
-      window.alert("โปรดเลือกรูปภาพ");
-      
-    }else{
-      const userConfirmed = window.confirm("ต้องการที่จะลบรูปภาพที่ถูกเลือกหรือไม่?");
-    if (userConfirmed) {
-      for (const i of this.deleteSelect) {
-        const status = await this.api.deleteImagebyId(i);
-      }
-      this.deleteSelect = [];
-      window.location.reload();
+      window.alert('โปรดเลือกรูปภาพ');
     } else {
-      console.log("ยกเลิกการลบรูปภาพ");
+      const userConfirmed = window.confirm(
+        'ต้องการที่จะลบรูปภาพที่ถูกเลือกหรือไม่?'
+      );
+      if (userConfirmed) {
+        for (const i of this.deleteSelect) {
+          const status = await this.api.deleteImagebyId(i);
+        }
+        this.deleteSelect = [];
+        window.location.reload();
+      } else {
+        console.log('ยกเลิกการลบรูปภาพ');
+      }
     }
-    }
-    
   }
-  
 
   navigateChart(imageId: number) {
     this.router.navigate(['/chart', imageId]);

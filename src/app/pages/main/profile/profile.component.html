@@ -77,7 +77,7 @@
         </div>
         <div class="image_user">
             <div class="container">
-                <div class="picvote1">
+                <div class="picvote1" [ngClass]="{'single-image': images.length === 1}">
                     <div class="image-wrapper" *ngFor="let image of images">
                         <div class="image-overlay">
                             <i class="material-icons" (click)="deleteImage(image.imageID)">delete_forever</i>
