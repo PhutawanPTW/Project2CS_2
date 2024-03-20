@@ -43,7 +43,7 @@ export class Top10Component implements OnInit {
     const userDataString = localStorage.getItem('userData');
     this.userData = userDataString ? JSON.parse(userDataString) : undefined;
     this.id = localStorage.getItem('userID');
-    this.loadData();
+    this.loadData();//check
     this.getTopImageData();
   }
 

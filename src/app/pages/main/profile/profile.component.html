@@ -27,7 +27,9 @@
     <h1>User Profile</h1>
     <div class="img-con">
         <div class="item">
-            <img class="logo" src="{{userData?.image}}" alt="image">
+
+            <input #inputField hidden type="file" (change)="uploadProfileImage($event)" (click)="inputField.value = ''" />
+            <img class="logo" src="{{userData?.image}}" alt="image" (click)="inputField.click()">
             <div class="detail">
                 <span class="Username">{{userData?.username}}</span>
                 <div class="user-info">

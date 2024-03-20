@@ -152,10 +152,10 @@ export class ApiService {
     }
   }
 
-  public async getStatisticbyId(image: number) {
-    if (image) {
+  public async getStatisticbyId(imageID: number) {
+    if (imageID) {
       const response = await lastValueFrom(
-        this.http.get(`${this.url}/statistics/${image}`)
+        this.http.get(`${this.url}/statistics/${imageID}`)
       );
       return response as Statistic;
     } else {

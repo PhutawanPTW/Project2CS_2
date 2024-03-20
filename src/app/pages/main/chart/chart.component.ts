@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ActivatedRoute } from '@angular/router';
-import { Statistic, User, imageUpload } from '../../../model/model';
+import { Statistic, User, imageUpload, imageUser } from '../../../model/model';
 import { ApiService } from '../../../services/api-service';
 import { ShareService } from '../../../services/share.service';
 import { Router } from '@angular/router';
@@ -30,6 +30,7 @@ export class ChartComponent {
   public chart: any;
   images: imageUpload[] = [];
   statistics: Statistic[] = [];
+  imgData : any;
   httpError: boolean = false;
   userID: any;
   userData!: User;
@@ -48,6 +49,8 @@ export class ChartComponent {
     const userDataString = localStorage.getItem('userData');
     this.userData = userDataString ? JSON.parse(userDataString) : null;
     this.id = this.route.snapshot.paramMap.get('id');
+    this.imgData = await this.api.getImagebyId(this.id);
+    console.log(this.imgData);
     this.statistics = await this.api.getStatistic(this.id, 7);
     this.createChart();
   }
@@ -88,66 +91,83 @@ export class ChartComponent {
   async createChart() {
     const currentDate = new Date();
     const labels = [];
-    const data = [];
-    const point : any = await this.api.getStatisticbyId(this.id);
+    const data : number[] = [];
+    const point: any = await this.api.getStatisticbyId(this.id);
+    console.log('Point:', point);
     const pointRadius = 5;
     for (let i = 6; i >= 0; i--) {
       const date = new Date(currentDate);
       date.setDate(currentDate.getDate() - i);
-  
+
       labels.push(
         `${date.getFullYear()}-${(date.getMonth() + 1)
           .toString()
           .padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
       );
     }
-  
+
     for (let i = 0; i < 7; i++) {
       const currentDateMinusDays = new Date(currentDate);
       currentDateMinusDays.setDate(currentDate.getDate() - i);
-  
-      console.log('Index:', i); // เพิ่มบรรทัดนี้เพื่อทำการล็อกค่า index
-      console.log('Current Date:', currentDateMinusDays); // ล็อกค่าวันที่ปัจจุบันที่ใช้ในการตรวจสอบ
-  
+
+      // console.log('Index:', i);
+      // console.log('Current Date:', currentDateMinusDays);
+
       // Check if there is data for the current date
       const dataForCurrentDate = this.statistics.find((statistic) => {
-        const statisticDate = new Date(statistic.date); // Assuming 'date' is the property in your Statistic model that contains the date
+        const statisticDate = new Date(statistic.date);
         return (
           currentDateMinusDays.getFullYear() === statisticDate.getFullYear() &&
           currentDateMinusDays.getMonth() === statisticDate.getMonth() &&
           currentDateMinusDays.getDate() === statisticDate.getDate()
         );
       });
-  
-      console.log('Data for Current Date:', dataForCurrentDate); // ล็อกข้อมูลสถิติสำหรับวันที่ปัจจุบัน
-  
+
+      // console.log('Data for Current Date:', dataForCurrentDate); // ล็อกข้อมูลสถิติสำหรับวันที่ปัจจุบัน
+      console.warn(dataForCurrentDate);
       if (dataForCurrentDate) {
-        data.push(dataForCurrentDate.voteScore);
+        data[i] = dataForCurrentDate.voteScore;
       } else {
-        // If no data for the current date, fetch data from the previous day
-        const previousDate = new Date(currentDateMinusDays);
-        previousDate.setDate(currentDateMinusDays.getDate() - 1);
-        const dataFromPreviousDate = this.statistics.find((statistic) => {
-          const statisticDate = new Date(statistic.date);
-          return (
-            previousDate.getFullYear() === statisticDate.getFullYear() &&
-            previousDate.getMonth() === statisticDate.getMonth() &&
-            previousDate.getDate() === statisticDate.getDate()
-          );
-        });
-        if (dataFromPreviousDate) {
-          data.push(dataFromPreviousDate.voteScore);
+        if (i == 6) {
+          if (point.length > 0) {
+            data[i] = point[0].voteScore;
+          } else {
+            data[i] = 0;
+          }
         } else {
-          data.push(point[0].voteScore);
+          const previousDate = new Date(currentDateMinusDays);
+          previousDate.setDate(currentDateMinusDays.getDate() - 1);
+          const dataFromPreviousDate = this.statistics.find((statistic) => {
+            const statisticDate = new Date(statistic.date);
+            return (
+              previousDate.getFullYear() === statisticDate.getFullYear() &&
+              previousDate.getMonth() === statisticDate.getMonth() &&
+              previousDate.getDate() === statisticDate.getDate()
+            );
+          });
+          if (dataFromPreviousDate) {
+            data[i] = dataFromPreviousDate.voteScore;
+          } else {
+           data.push(this.imgData.count);
+          }
         }
       }
+      console.error(i);
+      console.error(data);
+
     }
-  
+
+    for (let i = 0;i<data.length;i++) {
+      if(data[i] == undefined || data[i] == null || data[i] == 0){
+        data[i] = data[i + 1];
+      }
+    }
+
     console.error(data);
-  
+
     this.chart = new Chart('MyChart', {
       type: 'line',
-      data: {
+      data: { 
         labels: labels,
         datasets: [
           {

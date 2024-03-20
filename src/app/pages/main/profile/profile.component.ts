@@ -99,45 +99,52 @@ export class ProfileComponent {
 
     if (this.images.length >= 5) {
       window.alert('Cannot upload more than 5 images');
+      this.selectedFile = undefined;
       return;
     }
 
     try {
-      this.uploading = true; // Start uploading state
-      const uploadedImage = await this.api.uploadImage(this.selectedFile, userID);
+      this.uploading = true;
+      const uploadedImage = await this.api.uploadImage(
+        this.selectedFile,
+        userID
+      );
       console.log('Uploaded image:', uploadedImage);
-      
+
       await this.getImage();
-      
+
       this.selectedFile = undefined;
       window.alert('Image uploaded successfully');
- } catch (error) {
+    } catch (error) {
+      this.selectedFile = undefined;
       console.error('Error uploading image:', error);
       window.alert('Failed to upload image');
-      // Handle error
- } finally {
-      this.uploading = false; // End uploading state
- }
-}
+    } finally {
+      this.uploading = false;
+    }
+  }
 
+  uploadProfileImage(event: any) {
+    const file = event.target?.files[0];
+  }
 
   async deleteImage(id: number) {
-    const userConfirmed = window.confirm('ต้องการที่จะลบรูปภาพนี้หรือไม่?');
+    const userConfirmed = window.confirm('Do you want to delete this image?');
 
     if (userConfirmed) {
       const status = await this.api.deleteImagebyId(id);
       window.location.reload();
     } else {
-      console.log('ยกเลิกการลบรูปภาพ');
+      console.log('Canceled image deletion');
     }
   }
 
   async deleteAllImage() {
     if (!this.deleteSelect || this.deleteSelect.length === 0) {
-      window.alert('โปรดเลือกรูปภาพ');
+      window.alert('Please select an image');
     } else {
       const userConfirmed = window.confirm(
-        'ต้องการที่จะลบรูปภาพที่ถูกเลือกหรือไม่?'
+        'Do you want to delete the selected images?'
       );
       if (userConfirmed) {
         for (const i of this.deleteSelect) {
@@ -146,7 +153,7 @@ export class ProfileComponent {
         this.deleteSelect = [];
         window.location.reload();
       } else {
-        console.log('ยกเลิกการลบรูปภาพ');
+        console.log('Canceled image deletion');
       }
     }
   }

@@ -53,3 +53,11 @@ export interface Statistic {
   date: Date;
   imageID: number;
 }
+
+
+// export interface Statistics {
+//   voteScore: number;
+//   date: Date;
+//   imageID: number;
+// }
+

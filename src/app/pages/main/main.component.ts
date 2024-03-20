@@ -121,6 +121,8 @@ export class MainComponent implements OnInit {
     }
   }
 
+  
+
   async calrating(winner: imageUser, loser: imageUser) {
     const winnerEloRating = winner.count;
     const loserEloRating = loser.count;
