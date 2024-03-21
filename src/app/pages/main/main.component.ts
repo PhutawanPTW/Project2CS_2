@@ -10,6 +10,10 @@ import { ApiService } from '../../services/api-service';
 import { ShareService } from '../../services/share.service';
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogComponent } from './dialog.component';
+import $ from 'jquery';
+
 @Component({
   selector: 'app-main',
   standalone: true,
@@ -29,7 +33,8 @@ export class MainComponent implements OnInit {
     private route: ActivatedRoute,
     protected shareData: ShareService,
     protected api: ApiService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) {}
 
   id: any;
@@ -50,6 +55,11 @@ export class MainComponent implements OnInit {
     this.images = await this.api.getImage();
     // console.log(this.images);
     this.loadImages();
+
+    $('.toggle').click(function (e: JQuery.Event) {
+      e.preventDefault(); // The flicker is a codepen thing
+      $(this).toggleClass('toggle-on');
+    });
   }
 
   checkData() {
@@ -109,47 +119,84 @@ export class MainComponent implements OnInit {
   reshuffleImages(winner: imageUser, loser: imageUser) {
     if (this.isCD) {
       this.isCD = false;
-      this.chooseRandomImages(winner, loser);
-      this.loadImages();
-      if (this.canVote) {
-        this.calrating(winner, loser);
+      if (!$('.toggle').hasClass('toggle-on')) {
+        const dialogRef = this.dialog.open(DialogComponent, {
+          width: '500px',
+          data: {
+            winner: winner,
+            loser: loser,
+            winnerOldScore: winner.count,
+            loserOldScore: loser.count,
+            winnerExpectedScore: this.calculateExpectedScore(winner.count, loser.count, winner.imageID.toString(), loser.imageID.toString()),
+            loserExpectedScore: this.calculateExpectedScore(loser.count, winner.count, loser.imageID.toString(), winner.imageID.toString())
+          }
+        });
+        dialogRef.afterClosed().subscribe((result) => {
+          this.chooseRandomImages(winner, loser);
+          this.loadImages();
+          if (this.canVote) {
+            this.calrating(winner, loser);
+          }
+          setTimeout(() => {
+            this.isCD = true;
+          }, 1000);
+        });
+      } else {
+        this.chooseRandomImages(winner, loser);
+        this.loadImages();
+        if (this.canVote) {
+          this.calrating(winner, loser);
+        }
+        setTimeout(() => {
+          this.isCD = true;
+        }, 1000);
       }
-
-      setTimeout(() => {
-        this.isCD = true;
-      }, 1000);
     }
   }
-
   
 
   async calrating(winner: imageUser, loser: imageUser) {
     const winnerEloRating = winner.count;
     const loserEloRating = loser.count;
 
+    console.log(`Winner's old rating (${winner.imageID}): ${winnerEloRating}`);
+    console.log(`Loser's old rating (${loser.imageID}): ${loserEloRating}`);
+
     const winnerExpectedScore = this.calculateExpectedScore(
       winnerEloRating,
-      loserEloRating
+      loserEloRating,
+      winner.imageID.toString(), // แปลงเป็น string
+      loser.imageID.toString() // แปลงเป็น string
     );
     const loserExpectedScore = this.calculateExpectedScore(
       loserEloRating,
-      winnerEloRating
+      winnerEloRating,
+      loser.imageID.toString(), // แปลงเป็น string
+      winner.imageID.toString() // แปลงเป็น string
     );
+
     const plus = Math.round(this.K_FACTOR * (1 - winnerExpectedScore));
     const minus = Math.round(this.K_FACTOR * (0 - loserExpectedScore));
+
+    console.log(`Plus for ${winner.imageID}: ${plus}`);
+    console.log(`Minus for ${loser.imageID}: ${minus}`);
+
     const winnerNewRating = winnerEloRating + plus;
     const loserNewRating = loserEloRating + minus;
+
+    console.log(`Winner's new rating (${winner.imageID}): ${winnerNewRating}`);
+    console.log(`Loser's new rating (${loser.imageID}): ${loserNewRating}`);
 
     // ปัดคะแนนใหม่เป็นจำนวนเต็ม
     winner.count = Math.round(winnerNewRating);
     loser.count = Math.round(loserNewRating);
 
-    // console.log(
-    //   'Winner is ' + winner.imageID + ' with new Elo rating: ' + winner.count
-    // );
-    // console.log(
-    //   'Loser is ' + loser.imageID + ' with new Elo rating: ' + loser.count
-    // );
+    console.log(
+      'Winner is ' + winner.imageID + ' with new Elo rating: ' + winner.count
+    );
+    console.log(
+      'Loser is ' + loser.imageID + ' with new Elo rating: ' + loser.count
+    );
 
     const winnerBody = {
       userID: winner.userID,
@@ -170,10 +217,16 @@ export class MainComponent implements OnInit {
 
   private calculateExpectedScore(
     playerRating: number,
-    opponentRating: number
+    opponentRating: number,
+    playerImageID: string,
+    opponentImageID: string
   ): number {
     const exponent = (opponentRating - playerRating) / 400;
-    return 1 / (1 + Math.pow(10, exponent));
+    const expectedScore = 1 / (1 + Math.pow(10, exponent));
+    console.log(
+      `Expected Score for ImageID ${opponentImageID}: ${expectedScore}`
+    );
+    return expectedScore;
   }
 
   navigateToMain() {
@@ -194,6 +247,22 @@ export class MainComponent implements OnInit {
     this.router.navigate(['/profile']);
   }
 
+  navigateToUserProfile(username: string) {
+    const isLoggedIn = true;
+    if (isLoggedIn) {
+      this.router.navigate(['/profile', username]);
+    } else {
+      this.alertMessage();
+    }
+  }
+
+  alertMessage() {
+    alert('You need to log in first!');
+    localStorage.clear();
+    this.router.navigate(['/login']);
+    this.clearData();
+  }
+
   navigateTop() {
     this.router.navigate(['/top10']);
   }
@@ -203,43 +272,43 @@ export class MainComponent implements OnInit {
   }
 
   countdownDuration: number = 10; // Set the countdown duration in seconds
-countdownInterval: any;
+  countdownInterval: any;
 
-chooseRandomImages(select: imageUser, select2: imageUser) {
-  const foundItemIndex = this.images.findIndex(
-    (item) => item.imageID === select.imageID
-  );
-
-  const foundItemIndex2 = this.images.findIndex(
-    (item) => item.imageID === select2.imageID
-  );
-
-  if (foundItemIndex !== -1 && foundItemIndex2 !== -1) {
-    const chosenImage = this.images.splice(foundItemIndex, 1)[0];
-    const chosenImage2 = this.images.splice(foundItemIndex2, 1)[0];
-    // console.log('Removed images after vote:', chosenImage, chosenImage2);
-    // console.log('all', this.images);
-
-    if (this.images.length === 2) {
-      this.canVote = false; // Disable further voting when only two images are left
-
-      // Start the countdown
-      this.countdownInterval = setInterval(() => {
-        this.countdownDuration--;
-
-        if (this.countdownDuration === 0) {
-          clearInterval(this.countdownInterval);
-          this.images.push(chosenImage, chosenImage2);
-          console.log('Array after addition:', this.images);
-          this.canVote = true;
-          this.countdownDuration = 10; // Reset the countdown duration
-        }
-      }, 1000);
-    }
-  } else {
-    console.log(
-      `Item with imageID ${select.imageID} or ${select2.imageID} not found in the array.`
+  chooseRandomImages(select: imageUser, select2: imageUser) {
+    const foundItemIndex = this.images.findIndex(
+      (item) => item.imageID === select.imageID
     );
+
+    const foundItemIndex2 = this.images.findIndex(
+      (item) => item.imageID === select2.imageID
+    );
+
+    if (foundItemIndex !== -1 && foundItemIndex2 !== -1) {
+      const chosenImage = this.images.splice(foundItemIndex, 1)[0];
+      const chosenImage2 = this.images.splice(foundItemIndex2, 1)[0];
+      // console.log('Removed images after vote:', chosenImage, chosenImage2);
+      // console.log('all', this.images);
+
+      if (this.images.length === 2) {
+        this.canVote = false; // Disable further voting when only two images are left
+
+        // Start the countdown
+        this.countdownInterval = setInterval(() => {
+          this.countdownDuration--;
+
+          if (this.countdownDuration === 0) {
+            clearInterval(this.countdownInterval);
+            this.images.push(chosenImage, chosenImage2);
+            console.log('Array after addition:', this.images);
+            this.canVote = true;
+            this.countdownDuration = 10; // Reset the countdown duration
+          }
+        }, 10);
+      }
+    } else {
+      console.log(
+        `Item with imageID ${select.imageID} or ${select2.imageID} not found in the array.`
+      );
+    }
   }
-}
 }

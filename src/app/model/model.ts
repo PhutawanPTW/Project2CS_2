@@ -13,6 +13,13 @@ export interface Register {
   email: string;
 }
 
+export interface UpdateUser {
+  userID: number;
+  username: string;
+  password: string;
+  image: string;
+}
+
 export interface imageUpload {
   imageID: number;
   url: string;

@@ -47,4 +47,6 @@ export class ShareService {
     if (confirm('ลงทะเบียนสำเร็จ เข้าสู่หน้าล็อกอิน?'))
       this.router.navigate(['/login']);
   }
+
+  
 }

@@ -28,6 +28,14 @@ export class ApiService {
     // console.log(response);
     return response;
   }
+
+  public async updateUser(userId: number, body: Partial<User>) {
+    const response = await lastValueFrom(
+      this.http.put<User>(`${this.url}/users/update${userId}`, body)
+    );
+    return response;
+  }
+
   public async getImage() {
     const response = await lastValueFrom(
       this.http.get<imageUser[]>(`${this.url}/images`)

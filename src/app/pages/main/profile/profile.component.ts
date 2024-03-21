@@ -10,6 +10,8 @@ import { ApiService } from '../../../services/api-service';
 import { ShareService } from '../../../services/share.service';
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialog } from '@angular/material/dialog';
+import { UpdateProfileDialogComponent } from './update-profile-dialog.component';
 
 @Component({
   selector: 'app-profile',
@@ -31,7 +33,8 @@ export class ProfileComponent {
     private route: ActivatedRoute,
     protected shareData: ShareService,
     protected api: ApiService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) {}
   id: any;
   public images: imageUser[] = [];
@@ -127,6 +130,18 @@ export class ProfileComponent {
   uploadProfileImage(event: any) {
     const file = event.target?.files[0];
   }
+
+  editProfile(): void {
+    const dialogRef = this.dialog.open(UpdateProfileDialogComponent, {
+      width: '500px',
+      data: { userData: this.userData }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      // Handle the result of the dialog
+    });
+ }
 
   async deleteImage(id: number) {
     const userConfirmed = window.confirm('Do you want to delete this image?');

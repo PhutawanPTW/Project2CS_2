@@ -18,7 +18,6 @@
                 <mat-icon>exit_to_app</mat-icon>
                 Logout
             </button>
-
         </div>
     </div>
 </mat-toolbar>
@@ -28,7 +27,8 @@
     <div class="img-con">
         <div class="item">
 
-            <input #inputField hidden type="file" (change)="uploadProfileImage($event)" (click)="inputField.value = ''" />
+            <input #inputField hidden type="file" (change)="uploadProfileImage($event)"
+                (click)="inputField.value = ''" />
             <img class="logo" src="{{userData?.image}}" alt="image" (click)="inputField.click()">
             <div class="detail">
                 <span class="Username">{{userData?.username}}</span>
@@ -42,8 +42,8 @@
                 <button mat-stroked-button color="#384D6C" class="custom-button" (click)="fileInput.click()"
                     *ngIf="!selectedFile && !uploading">Upload New Photo</button>
                 <input type="file" #fileInput style="display: none" (change)="handleFileInput($event)">
-                <button mat-flat-button color="#384D6C" class="custom-button" *ngIf="!selectedFile && !uploading">Edit
-                    Profile</button>
+                <button mat-flat-button color="#384D6C" class="custom-button" (click)="editProfile()"
+                    *ngIf="!selectedFile && !uploading">Edit Profile</button>
                 <span *ngIf="selectedFile && !uploading">{{ selectedFile.name }}</span>
                 <button mat-stroked-button color="warn" class="custom-bt" (click)="sendFile(this.id)"
                     *ngIf="selectedFile && !uploading">

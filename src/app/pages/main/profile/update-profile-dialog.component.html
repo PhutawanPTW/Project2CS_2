@@ -1,0 +1,32 @@
+<div class="container">
+  <div class="row" style="justify-content: flex-start;">
+    <!-- <p style="color: black; font-size: 36px; text-align: left; font-weight: 400;">Login to VoteView</p> -->
+    <input #inputField hidden type="file" (click)="inputField.value = ''" />
+    <img class="logo" src="../../../../assets/Image/number-10.png" alt="image" (click)="inputField.click()">
+    <p class="H_text">Username:</p>
+    <mat-form-field class="inp" appearance="outline">
+      <mat-label>Enter your username name</mat-label>
+      <input matInput type="text" id="username" #username>
+    </mat-form-field>
+
+
+    <p class="H_text">Old Password:</p>
+    <mat-form-field class="inp" appearance="outline">
+      <mat-label>Enter your password</mat-label>
+      <input matInput type="password" id="password" #password>
+    </mat-form-field>
+
+    <p class="H_text">New Password:</p>
+    <mat-form-field class="inp" appearance="outline">
+      <mat-label>Enter your new password</mat-label>
+      <input matInput type="password" id="password" #password>
+    </mat-form-field>
+
+    <p class="H_text">Confirm New Password:</p>
+    <mat-form-field class="inp" appearance="outline">
+      <mat-label>Confirm your new password</mat-label>
+      <input matInput type="password" id="password2" #password2>
+    </mat-form-field>
+  </div>
+  <button mat-flat-button color="primary" class="custom-button" >Eidt</button>
+</div>
