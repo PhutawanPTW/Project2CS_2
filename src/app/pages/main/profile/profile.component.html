@@ -81,6 +81,19 @@
             <div class="container">
                 <div class="picvote1" [ngClass]="{'single-image': images.length === 1}">
                     <div class="image-wrapper" *ngFor="let image of images">
+                        <div class="image-rank">
+                            <div>
+                                <img src="../../../../assets/Image/arrow-up.png"
+                                    alt="Rank Up">
+                                <!-- <img *ngIf="imageUrl.rankDiff < 0" src="../../../../assets/Image/arrow-down.png"
+                                    alt="Rank Down">
+                                <img *ngIf="imageUrl.rankDiff === 0" src="../../../../assets/Image/NoUpDown.png"
+                                    alt="No Rank"> -->
+                            </div>
+                            <!-- <span class="rank-ud"
+                                [ngStyle]="{'color': imageUrl.rankDiff < 0 ? 'red' : (imageUrl.rankDiff > 0 ? 'green' : 'blue')}">{{imageUrl.rankDiff}}</span> -->
+                        </div>
+
                         <div class="image-overlay">
                             <i class="material-icons" (click)="deleteImage(image.imageID)">delete_forever</i>
                             <i class="material-icons" (click)="navigateChart(image.imageID)">query_stats</i>
@@ -88,6 +101,8 @@
                             <i class="material-icons select-icon button"
                                 (click)="toggleTransform(image.imageID , $event)">add</i>
                         </div>
+
+
                         <img [src]="image.url" [alt]="'ภาพที่ ' + image.imageID">
                     </div>
                 </div>

@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ActivatedRoute } from '@angular/router';
-import { User, imageUpload, imageUser } from '../../../model/model';
+import { User, imageUpload, imageUser, rankID } from '../../../model/model';
 import { ApiService } from '../../../services/api-service';
 import { ShareService } from '../../../services/share.service';
 import { Router } from '@angular/router';
@@ -45,6 +45,7 @@ export class ProfileComponent {
   uploading: boolean = false;
   userData: User | undefined;
   deleteSelect: number[] = [];
+  rank: rankID[] = [];
   async ngOnInit() {
     this.checkLogin();
     this.setData();
@@ -81,14 +82,8 @@ export class ProfileComponent {
     console.log(this.deleteSelect);
   }
 
-  // async loadData() {
-  //   if (!this.id) {
-  //     return;
-  //   }
-  //   this.shareData.userData = await this.api.getUserbyId(this.id);
-  //   localStorage.setItem('userData', JSON.stringify(this.shareData.userData));
-  //   console.log(this.shareData.userData);
-  // }
+
+  
 
   handleFileInput(event: any) {
     this.selectedFile = event.target.files[0];

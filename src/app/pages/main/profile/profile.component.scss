@@ -264,7 +264,19 @@
   object-fit: cover;
   transition: 0.2s ease;
   cursor: pointer;
+}
 
+.image-rank {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  z-index: 1;
+}
+
+.image-rank img {
+  width: 28px;
+  height: auto;
+  filter: brightness(1.5);
 }
 
 .single-image .image-wrapper {
