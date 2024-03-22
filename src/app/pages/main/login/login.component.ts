@@ -32,6 +32,10 @@ export class LoginComponent {
     this.router.navigate(['/']);
   }
 
+  navigateToAdmin() {
+    this.router.navigate(['/Admin']);
+  }
+
   login(user: string, password: string) {
     if (user.trim() === '' || password === '') {
       this.loginError = 'Please fill in both username and password.';
@@ -44,7 +48,12 @@ export class LoginComponent {
 
     if (foundUser) {
       if (password === foundUser.password) {
-        this.navigateToMain();
+        // Check if the user is an owner or a regular user
+        if (foundUser.type === 'owner') {
+          this.navigateToAdmin();
+        } else {
+          this.navigateToMain();
+        }
         localStorage.setItem('userID', JSON.stringify(foundUser.userID));
       } else {
         this.loginError = 'Incorrect password.';

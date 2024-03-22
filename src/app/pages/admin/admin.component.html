@@ -1,1 +1,70 @@
-<p>admin works!</p>
+<mat-toolbar class="fxLayout-dark">
+    <div class="fxLayout" (click)="navigateToMain()">
+        <img logo src="assets/Image/log_View.png" alt="icon" />
+        <span>View</span>
+    </div>
+    <div>
+        <div class="button_fx">
+            <div class="profile-picture">
+                <img logo src="{{shareData.userData?.image}}" alt="icon" />
+            </div>
+            <button mat-flat-button type="submit" color="basic" class="mat-bt logout" (click)="navigateToLogin()">
+                <mat-icon>exit_to_app</mat-icon>
+                Logout
+            </button>
+        </div>
+    </div>
+</mat-toolbar>
+
+<div class="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary">
+    <div class="h-screen flex-grow-1 overflow-y-lg-auto">
+        <header class="header">
+            <div class="container-fluid">
+                <h1>All User</h1>
+                <p>All user data including all data</p>
+            </div>
+        </header>
+        <div class="container-fluid">
+            <div class="card shadow border-0 mb-7">
+                <table class="table table-hover table-nowrap">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col" class="table-header">UserID</th>
+                            <th scope="col" class="table-header">Name</th>
+                            <th scope="col" class="table-header">Email</th>
+                            <th scope="col" class="table-header">Amount Picture</th>
+                            <th class="table-header"></th>
+                        </tr>
+                    </thead>
+                    <tbody *ngFor="let item of [1,2,3,4,5]">
+                        <tr>
+                            <td class="table-data">
+                                15
+                            </td>
+                            <td>
+                                <img alt="..." src="../../../assets/Image/catavatar.png"
+                                    class="avatar avatar-sm rounded-circle me-2">
+                                <a class="text-heading font-semibold" href="#">
+                                    Robert Fox
+                                </a>
+                            </td>
+                            <td class="table-data">
+                                RobertFoxgmail.com
+                            </td>
+
+                            <td class="table-data">
+                                5
+                            </td>
+                            <td class="text-end">
+                                <a class="btn btn-sm btn-neutral">View</a>
+                                <button type="button" class="btn btn-sm btn-square btn-neutral text-danger-hover">
+                                    <mat-icon aria-label="delete" class="icon-large">delete</mat-icon>
+                                </button>                                
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
