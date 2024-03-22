@@ -26,6 +26,7 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './admin.component.scss',
 })
 export class AdminComponent {
+
   id: any;
   userData: User[] = [];
 
@@ -36,12 +37,12 @@ export class AdminComponent {
     private router: Router
   ) {
     this.shareData.getUser();
-    
   }
 
   async ngOnInit() {
     this.id = localStorage.getItem('userID');
-    this.checkData();console.log('All users:', this.shareData.userData);
+    this.checkData();
+    console.log('All users:', this.shareData.userData);
   }
 
   checkData() {
@@ -71,6 +72,10 @@ export class AdminComponent {
 
   navigateToMain() {
     this.router.navigate(['/Admin']);
+  }
+
+  navigateToViewProfile() {
+    this.router.navigate(['/ViewProfile']);
   }
 
   navigateToLogin() {

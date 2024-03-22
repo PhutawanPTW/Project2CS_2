@@ -42,6 +42,7 @@ export class ProfileComponent {
   imageCount: number = 0;
   isAddIconTransformed: boolean = false;
   selectedFile: File | undefined;
+  updatefile: File | undefined;
   uploading: boolean = false;
   userData: User | undefined;
   deleteSelect: number[] = [];
@@ -122,8 +123,28 @@ export class ProfileComponent {
     }
   }
 
-  uploadProfileImage(event: any) {
-    const file = event.target?.files[0];
+  async uploadProfileImage(event: any) {
+    // // const file = event.target?.files[0];
+    // this.updatefile = event.target.files[0];
+    // try {
+    //   this.uploading = true;
+    //   const uploadedImage = await this.api.uploadImage(
+    //     this.updatefile,
+    //     userID
+    //   );
+    //   console.log('Uploaded image:', uploadedImage);
+
+    //   await this.getImage();
+
+    //   this.updatefile = undefined;
+    //   window.alert('Image uploaded successfully');
+    // } catch (error) {
+    //   this.updatefile = undefined;
+    //   console.error('Error uploading image:', error);
+    //   window.alert('Failed to upload image');
+    // } finally {
+    //   this.uploading = false;
+    // }
   }
 
   editProfile(): void {

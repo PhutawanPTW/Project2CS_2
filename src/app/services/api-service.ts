@@ -77,6 +77,20 @@ export class ApiService {
     }
   }
 
+  public async updateProfileUser(userID: string, updatedProfile: imageUser): Promise<imageUser> {
+    try {
+      const response = await lastValueFrom(
+        this.http.put<imageUser>(`${this.url}/upload/${userID}`, updatedProfile)
+      );
+      console.log(response);
+      return response;
+    } catch (error) {
+      console.error('Error updating user profile', error);
+      throw error;
+    }
+  }
+  
+
   public async getUserbyId(userId: number) {
     if (userId) {
       const response = await lastValueFrom(

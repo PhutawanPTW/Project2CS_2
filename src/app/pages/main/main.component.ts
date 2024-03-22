@@ -250,7 +250,7 @@ export class MainComponent implements OnInit {
   navigateToUserProfile(username: string) {
     const isLoggedIn = true;
     if (isLoggedIn) {
-      this.router.navigate(['/profile', username]);
+      this.router.navigate(['/ViewProfile', username]);
     } else {
       this.alertMessage();
     }
