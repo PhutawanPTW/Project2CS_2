@@ -24,9 +24,8 @@
 
 <div class="vote-con">
     <h1>User Profile</h1>
-    <div class="img-con">
+    <div class="img-con" *ngIf="shareData.userData !== undefined; else guestToolbar">
         <div class="item">
-
             <input #inputField hidden type="file" (change)="uploadProfileImage($event)"
                 (click)="inputField.value = ''" />
             <img class="logo" src="{{userData?.image}}" alt="image" (click)="inputField.click()">
@@ -83,8 +82,7 @@
                     <div class="image-wrapper" *ngFor="let image of images">
                         <div class="image-rank">
                             <div>
-                                <img src="../../../../assets/Image/arrow-up.png"
-                                    alt="Rank Up">
+                                <img src="../../../../assets/Image/arrow-up.png" alt="Rank Up">
                                 <!-- <img *ngIf="imageUrl.rankDiff < 0" src="../../../../assets/Image/arrow-down.png"
                                     alt="Rank Down">
                                 <img *ngIf="imageUrl.rankDiff === 0" src="../../../../assets/Image/NoUpDown.png"
@@ -109,4 +107,51 @@
             </div>
         </div>
     </div>
+    <ng-template #guestToolbar>
+        <div class="item">
+            <input #inputField hidden type="file" (change)="uploadProfileImage($event)"
+                (click)="inputField.value = ''" />
+            <img class="logo" src="{{userData?.image}}" alt="image" (click)="inputField.click()">
+            <div class="detail">
+                <span class="Username">{{userData?.username}}</span>
+                <div class="user-info">
+                    <img class="icon_img" src="../../../../assets/Image/image.png">
+                    <span class="pic_count">{{ imageCount }} รูป</span>
+                </div>
+                <span class="follow">{{ userData?.type }}</span>
+            </div>
+        </div>
+        <hr style="margin-top: 20px; border: 1px solid #384D6C; border-radius: 20px;">
+
+        <div class="item">
+            <div class="user-p">
+                <img class="icon_u" src="../../../../assets/Image/gallery.png">
+                <span class="pic_co">Picture by {{shareData.userData?.username}}</span>
+            </div>
+        </div>
+        <div class="image_user">
+            <div class="container">
+                <div class="picvote1" [ngClass]="{'single-image': images.length === 1}">
+                    <div class="image-wrapper" *ngFor="let image of images">
+                        <div class="image-rank">
+                            <div>
+                                <img src="../../../../assets/Image/arrow-up.png" alt="Rank Up">
+                                <!-- <img *ngIf="imageUrl.rankDiff < 0" src="../../../../assets/Image/arrow-down.png"
+                                    alt="Rank Down">
+                                <img *ngIf="imageUrl.rankDiff === 0" src="../../../../assets/Image/NoUpDown.png"
+                                    alt="No Rank"> -->
+                            </div>
+                            <!-- <span class="rank-ud"
+                                [ngStyle]="{'color': imageUrl.rankDiff < 0 ? 'red' : (imageUrl.rankDiff > 0 ? 'green' : 'blue')}">{{imageUrl.rankDiff}}</span> -->
+                        </div>
+
+                        <div class="image-overlay">
+                            <i class="material-icons" (click)="navigateChart(image.imageID)">query_stats</i>
+                        </div>
+                        <img [src]="image.url" [alt]="'ภาพที่ ' + image.imageID">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
 </div>
