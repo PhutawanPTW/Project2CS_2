@@ -1,4 +1,9 @@
-/* You can add global styles to this file, and also import other style files */
+@font-face {
+  font-family: "Good Timing";
+  src: url('./assets/Font/good\ timing\ bd.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
 
 html,
 body {

@@ -1,0 +1,47 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url("https://media.istockphoto.com/id/990697446/vector/gray-abstract-background.jpg?s=612x612&w=0&k=20&c=vO8a_dlQnyjvQxpnyKR9w5S9166pdAUrwnPg_P5zQ3k=");
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.winner {
+  color: green;
+  font-family: "Monoton", cursive;
+  font-size: 48px;
+  text-align: center;
+}
+
+.loser {
+  color: red;
+  font-family: "Monoton", cursive;
+  font-size: 48px;
+  text-align: center;
+}
+
+.title-score {
+  font-family: "Good Timing", sans-serif;
+  color: rgb(37, 37, 37);
+  font-size: 24px;
+  text-align: center;
+}
+
+.on-score {
+  font-family: "Anonymous Pro", monospace;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bolder;
+}
+
+.Rating {
+  font-family: "Anonymous Pro", monospace;
+  font-size: 20px;
+  font-weight: bolder;
+}

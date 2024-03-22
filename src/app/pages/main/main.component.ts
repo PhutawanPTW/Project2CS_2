@@ -116,21 +116,35 @@ export class MainComponent implements OnInit {
     this.userData2 = userData2;
   }
 
-  reshuffleImages(winner: imageUser, loser: imageUser) {
+  async reshuffleImages(winner: imageUser, loser: imageUser) {
+    const { plus, minus } = await this.calrating(winner, loser);
     if (this.isCD) {
       this.isCD = false;
       if (!$('.toggle').hasClass('toggle-on')) {
         const dialogRef = this.dialog.open(DialogComponent, {
-          width: '500px',
+          width: '900px',
           data: {
             winner: winner,
             loser: loser,
             winnerOldScore: winner.count,
             loserOldScore: loser.count,
-            winnerExpectedScore: this.calculateExpectedScore(winner.count, loser.count, winner.imageID.toString(), loser.imageID.toString()),
-            loserExpectedScore: this.calculateExpectedScore(loser.count, winner.count, loser.imageID.toString(), winner.imageID.toString())
-          }
+            winnerExpectedScore: this.calculateExpectedScore(
+              winner.count,
+              loser.count,
+              winner.imageID.toString(),
+              loser.imageID.toString()
+            ),
+            loserExpectedScore: this.calculateExpectedScore(
+              loser.count,
+              winner.count,
+              loser.imageID.toString(),
+              winner.imageID.toString()
+            ),
+            plus: plus,
+            minus: minus,
+          },
         });
+
         dialogRef.afterClosed().subscribe((result) => {
           this.chooseRandomImages(winner, loser);
           this.loadImages();
@@ -153,7 +167,6 @@ export class MainComponent implements OnInit {
       }
     }
   }
-  
 
   async calrating(winner: imageUser, loser: imageUser) {
     const winnerEloRating = winner.count;
@@ -213,6 +226,8 @@ export class MainComponent implements OnInit {
     await this.api.updateScore(loser.imageID, loser.count);
     await this.api.vote(winnerBody);
     await this.api.vote(loserBody);
+
+    return { plus, minus };
   }
 
   private calculateExpectedScore(

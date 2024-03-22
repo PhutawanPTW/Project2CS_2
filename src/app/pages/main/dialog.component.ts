@@ -26,6 +26,8 @@ export class DialogComponent implements OnInit {
   loserOldScore: number;
   winnerExpectedScore: number;
   loserExpectedScore: number;
+  plus: number;
+  minus: number;
 
   constructor(
     public dialogRef: MatDialogRef<DialogComponent>,
@@ -37,12 +39,14 @@ export class DialogComponent implements OnInit {
     this.loserOldScore = data.loserOldScore;
     this.winnerExpectedScore = data.winnerExpectedScore;
     this.loserExpectedScore = data.loserExpectedScore;
+    this.plus = data.plus;
+    this.minus = data.minus;
   }
 
   ngOnInit(): void {
     setTimeout(() => {
       this.dialogRef.close();
-    }, 3000);
+    }, 300000);
   }
 
   onNoClick(): void {
