@@ -6,6 +6,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  font-family: "Anonymous Pro", monospace !important;
 }
 
 .row {
@@ -61,16 +62,30 @@
   position: relative;
 }
 
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  width: 400px;
+  margin: 0 auto;
+}
+
 .custom-button {
   margin: 30px 0;
-  width: 400px;
+  width: 190px;
   height: 40px;
-  background-color: #37b437 !important;
-  color: white !important;
   transition: 0.3s ease;
   border: none;
   font-family: "Anonymous Pro", monospace !important;
   font-weight: bolder;
+  color: white !important;
+}
+
+.edit-button {
+  background-color: #37b437 !important;
+}
+
+.cancel-button {
+  background-color: red !important;
 }
 
 .custom-button:hover {

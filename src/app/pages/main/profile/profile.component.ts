@@ -11,7 +11,9 @@ import { ShareService } from '../../../services/share.service';
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
-import { UpdateProfileDialogComponent } from './update-profile-dialog.component';
+import { UpdateProfileDialogComponent } from './edit-profile/update-profile-dialog.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { UpdatePasswordDialogComponent } from './edit-password/update-password-dialog.component';
 
 @Component({
   selector: 'app-profile',
@@ -23,6 +25,7 @@ import { UpdateProfileDialogComponent } from './update-profile-dialog.component'
     MatInputModule,
     MatFormFieldModule,
     MatIconModule,
+    MatMenuModule,
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
@@ -83,9 +86,6 @@ export class ProfileComponent {
     console.log(this.deleteSelect);
   }
 
-
-  
-
   handleFileInput(event: any) {
     this.selectedFile = event.target.files[0];
   }
@@ -133,9 +133,7 @@ export class ProfileComponent {
     //     userID
     //   );
     //   console.log('Uploaded image:', uploadedImage);
-
     //   await this.getImage();
-
     //   this.updatefile = undefined;
     //   window.alert('Image uploaded successfully');
     // } catch (error) {
@@ -150,14 +148,24 @@ export class ProfileComponent {
   editProfile(): void {
     const dialogRef = this.dialog.open(UpdateProfileDialogComponent, {
       width: '500px',
-      data: { userData: this.userData }
+      data: { userData: this.userData },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       console.log('The dialog was closed');
-      // Handle the result of the dialog
     });
- }
+  }
+
+  editPassword(): void {
+    const dialogRef = this.dialog.open(UpdatePasswordDialogComponent, {
+      width: '500px',
+      data: { userId: this.id },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log('The dialog was closed');
+    });
+  }
 
   async deleteImage(id: number) {
     const userConfirmed = window.confirm('Do you want to delete this image?');

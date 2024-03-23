@@ -6,8 +6,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
-import { Register, UpdateUser } from '../../../model/model';
-import { ApiService } from '../../../services/api-service';
+import { Register, UpdateUser } from '../../../../model/model';
+import { ApiService } from '../../../../services/api-service';
 
 @Component({
   selector: 'app-update-profile-dialog',

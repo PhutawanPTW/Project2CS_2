@@ -10,23 +10,24 @@
     </mat-form-field>
 
 
-    <p class="H_text">Old Password:</p>
+    <p class="H_text">Email:</p>
     <mat-form-field class="inp" appearance="outline">
-      <mat-label>Enter your password</mat-label>
+      <mat-label>Enter your email</mat-label>
       <input matInput type="password" id="password" #password>
     </mat-form-field>
 
-    <p class="H_text">New Password:</p>
+    <p class="H_text">Confirm Password:</p>
     <mat-form-field class="inp" appearance="outline">
-      <mat-label>Enter your new password</mat-label>
-      <input matInput type="password" id="password" #password>
-    </mat-form-field>
-
-    <p class="H_text">Confirm New Password:</p>
-    <mat-form-field class="inp" appearance="outline">
-      <mat-label>Confirm your new password</mat-label>
+      <mat-label>Confirm your password</mat-label>
       <input matInput type="password" id="password2" #password2>
     </mat-form-field>
   </div>
-  <button mat-flat-button color="primary" class="custom-button" >Eidt</button>
+  <div class="button-container">
+    <button mat-flat-button color="basic" class="custom-button cancel-button">
+      <mat-icon>cancel</mat-icon> Cancel
+    </button>
+    <button mat-flat-button color="primary" class="custom-button edit-button">
+      <mat-icon>check_circle</mat-icon> Submit
+    </button>
+  </div>  
 </div>

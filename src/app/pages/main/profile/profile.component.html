@@ -41,8 +41,12 @@
                 <button mat-stroked-button color="#384D6C" class="custom-button" (click)="fileInput.click()"
                     *ngIf="!selectedFile && !uploading">Upload New Photo</button>
                 <input type="file" #fileInput style="display: none" (change)="handleFileInput($event)">
-                <button mat-flat-button color="#384D6C" class="custom-button" (click)="editProfile()"
-                    *ngIf="!selectedFile && !uploading">Edit Profile</button>
+                <button mat-flat-button color="#384D6C" class="custom-button" [matMenuTriggerFor]="menu"
+                    *ngIf="!selectedFile && !uploading">Setting</button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="editProfile()">Edit Profile</button>
+                    <button mat-menu-item (click)="editPassword()">Change Password</button>
+                </mat-menu>
                 <span *ngIf="selectedFile && !uploading">{{ selectedFile.name }}</span>
                 <button mat-stroked-button color="warn" class="custom-bt" (click)="sendFile(this.id)"
                     *ngIf="selectedFile && !uploading">
