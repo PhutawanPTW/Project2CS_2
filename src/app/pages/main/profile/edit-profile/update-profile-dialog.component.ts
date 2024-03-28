@@ -55,6 +55,11 @@ export class UpdateProfileDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  cancel(): void {
+    this.dialogRef.close();
+  }
+  
+
   isFieldEmpty(...fields: string[]): boolean {
     if (fields.some((field) => !field)) {
       alert('กรุณากรอกข้อมูลให้ครบทุกช่อง');
