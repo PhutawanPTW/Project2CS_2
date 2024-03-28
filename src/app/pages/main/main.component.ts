@@ -48,18 +48,23 @@ export class MainComponent implements OnInit {
   isCD = true;
   httpError: boolean = false;
   leftImageError: boolean = false;
+  user: User[] = [];
 
   async ngOnInit() {
     this.id = localStorage.getItem('userID');
     this.checkData();
     this.images = await this.api.getImage();
-    // console.log(this.images);
+
     this.loadImages();
 
     $('.toggle').click(function (e: JQuery.Event) {
-      e.preventDefault(); // The flicker is a codepen thing
+      e.preventDefault();
       $(this).toggleClass('toggle-on');
     });
+    if (this.shareData.userData?.type == 'owner') {
+      this.router.navigate(['/login']);
+    }
+    console.log(this.shareData.userData);
   }
 
   checkData() {
@@ -117,7 +122,27 @@ export class MainComponent implements OnInit {
   }
 
   async reshuffleImages(winner: imageUser, loser: imageUser) {
-    const { plus, minus } = await this.calrating(winner, loser);
+    const {
+      plus,
+      minus,
+      winnerOldRating,
+      winnerNewRating,
+      loserOldRating,
+      loserNewRating,
+      winnerExpectedScore,
+      loserExpectedScore,
+    } = await this.calrating(winner, loser);
+
+    console.log(`Winner's old rating: ${winnerOldRating}`);
+    console.log(`Winner's new rating: ${winnerNewRating}`);
+    console.log(`Winner's increased by: ${plus}`);
+    console.log(`Winner's expected score: ${winnerExpectedScore}`);
+
+    console.log(`Loser's old rating: ${loserOldRating}`);
+    console.log(`Loser's new rating: ${loserNewRating}`);
+    console.log(`Loser's decreased by: ${minus}`);
+    console.log(`Loser's expected score: ${loserExpectedScore}`);
+
     if (this.isCD) {
       this.isCD = false;
       if (!$('.toggle').hasClass('toggle-on')) {
@@ -172,9 +197,6 @@ export class MainComponent implements OnInit {
     const winnerEloRating = winner.count;
     const loserEloRating = loser.count;
 
-    console.log(`Winner's old rating (${winner.imageID}): ${winnerEloRating}`);
-    console.log(`Loser's old rating (${loser.imageID}): ${loserEloRating}`);
-
     const winnerExpectedScore = this.calculateExpectedScore(
       winnerEloRating,
       loserEloRating,
@@ -191,25 +213,12 @@ export class MainComponent implements OnInit {
     const plus = Math.round(this.K_FACTOR * (1 - winnerExpectedScore));
     const minus = Math.round(this.K_FACTOR * (0 - loserExpectedScore));
 
-    console.log(`Plus for ${winner.imageID}: ${plus}`);
-    console.log(`Minus for ${loser.imageID}: ${minus}`);
-
     const winnerNewRating = winnerEloRating + plus;
     const loserNewRating = loserEloRating + minus;
-
-    console.log(`Winner's new rating (${winner.imageID}): ${winnerNewRating}`);
-    console.log(`Loser's new rating (${loser.imageID}): ${loserNewRating}`);
 
     // ปัดคะแนนใหม่เป็นจำนวนเต็ม
     winner.count = Math.round(winnerNewRating);
     loser.count = Math.round(loserNewRating);
-
-    console.log(
-      'Winner is ' + winner.imageID + ' with new Elo rating: ' + winner.count
-    );
-    console.log(
-      'Loser is ' + loser.imageID + ' with new Elo rating: ' + loser.count
-    );
 
     const winnerBody = {
       userID: winner.userID,
@@ -227,7 +236,16 @@ export class MainComponent implements OnInit {
     await this.api.vote(winnerBody);
     await this.api.vote(loserBody);
 
-    return { plus, minus };
+    return {
+      plus,
+      minus,
+      winnerOldRating: winnerEloRating,
+      winnerNewRating: winnerNewRating,
+      loserOldRating: loserEloRating,
+      loserNewRating: loserNewRating,
+      winnerExpectedScore,
+      loserExpectedScore,
+    };
   }
 
   private calculateExpectedScore(
@@ -238,9 +256,6 @@ export class MainComponent implements OnInit {
   ): number {
     const exponent = (opponentRating - playerRating) / 400;
     const expectedScore = 1 / (1 + Math.pow(10, exponent));
-    console.log(
-      `Expected Score for ImageID ${opponentImageID}: ${expectedScore}`
-    );
     return expectedScore;
   }
 
@@ -262,11 +277,19 @@ export class MainComponent implements OnInit {
     this.router.navigate(['/profile']);
   }
 
-  navigateToUserProfile(username: string) {
-    const isLoggedIn = true;
-    if (isLoggedIn) {
-      this.router.navigate(['/ViewProfile', username]);
+  navigateToViewProfile(userID: number) {
+    const isLoggedIn = this.shareData.userData !== undefined; // Check if user is logged in
+    const loggedInUserID = this.shareData.userData
+      ? this.shareData.userData.userID
+      : null; // Get logged in user's ID
+    if (isLoggedIn && loggedInUserID === userID) {
+      // If logged in and the clicked profile is the user's own profile
+      this.router.navigate(['/profile']); // Navigate to the profile page
+    } else if (isLoggedIn) {
+      // If logged in but trying to view another user's profile
+      this.router.navigate(['/ViewProfile', userID]); // Navigate to the view profile page
     } else {
+      // If not logged in
       this.alertMessage();
     }
   }

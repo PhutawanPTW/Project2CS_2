@@ -36,7 +36,7 @@
             <p class="winner">WINNER!</p>
             <p class="title-score">Picture ID: &nbsp;{{ winner.imageID }} &nbsp;to win</p>
             <p class="on-score">Plus for Winner: {{ plus }}</p>
-            <p class="on-score">Old Score: {{winnerOldScore}}</p>
+            <p class="on-score">Old Score: {{winner.count - plus}}</p>
             <p class="on-score">New Score: {{ winner.count }}</p>
             <p class="Rating">Rating : {{winnerExpectedScore}}</p>
         </div>
@@ -45,7 +45,7 @@
         <p class="loser">LOSER!</p>
         <p class="title-score">Picture ID: &nbsp;{{ loser.imageID }} &nbsp;to loss</p>
         <p class="on-score">Minus for Loser: {{ minus }}</p>
-        <p class="on-score">Old Score: {{loserOldScore}}</p>
+        <p class="on-score">Old Score: {{loser.count + plus }}</p>
         <p class="on-score">New Score: {{ loser.count }}</p>
         <p class="Rating">Rating : {{loserExpectedScore}}</p>
     </div>

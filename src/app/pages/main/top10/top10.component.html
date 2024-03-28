@@ -1,4 +1,5 @@
-<mat-toolbar class="fxLayout-dark" *ngIf="userData!== undefined; else guestToolbar">
+<ng-container *ngIf="userData !== undefined; else guestToolbar">
+<mat-toolbar class="fxLayout-dark" *ngIf="userData.type !== 'owner'; else adminToolbar">
     <div class="fxLayout" (click)="navigateToMain()">
         <img logo src="assets/Image/log_View.png" alt="icon" />
         <span>View</span>
@@ -20,55 +21,10 @@
         </button>
     </div>
 </mat-toolbar>
+</ng-container>
 
-<div class="top-container">
-    <h1 class="TextHead">Top 10 most voted scenic views.</h1>
-    <div class="img-grid">
-        <div class="item" *ngFor="let imageUrl of rank.slice(0, 3); let i = index">
-            <div class="image-container">
-                <img [src]="imageUrl.url" alt="Image">
-                <div class="rank-icon-container">
-                    <img [src]="getRankIconImages(i + 1)" alt="Rank Icon">
-                    <!-- <img [src]="getArrowIcon(imageUrl.rankDiff)" alt="Arrow Icon"> -->
-                </div>
-            </div>
-            <div class="text-container">
-                Score: <span class="vote-score">{{imageUrl.voteScore}}</span>
-                <div class="arrow-icon">
-                    <img *ngIf="imageUrl.rankDiff > 0" src="../../../../assets/Image/arrow-up.png" alt="Rank Up">
-                    <img *ngIf="imageUrl.rankDiff < 0" src="../../../../assets/Image/arrow-down.png" alt="Rank Down">
-                    <img *ngIf="imageUrl.rankDiff == 0" src="../../../../assets/Image/NoUpDown.png" alt="No Rank">
-                </div>
-                <span class="rank-ud"
-                    [ngStyle]="{'color': imageUrl.rankDiff < 0 ? 'red' : (imageUrl.rankDiff > 0 ? 'green' : 'blue')}">{{imageUrl.rankDiff}}</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="leaderboard">
-        <div class="item" *ngFor="let imageUrl of rank.slice(3,10); let i = index">
-            <div class="image-container">
-                <img [src]="imageUrl.url" alt="Image">
-                <div class="rank-container">
-                    <img [src]="getRankIconImages(i + 4)" alt="Rank Icon">
-                </div>
-            </div>
-            <div class="text-container">
-                Score: <span class="vote-score">{{imageUrl.voteScore}}</span>
-                <div class="arrow-icon">
-                    <img *ngIf="imageUrl.rankDiff > 0" src="../../../../assets/Image/arrow-up.png" alt="Rank Up">
-                    <img *ngIf="imageUrl.rankDiff < 0" src="../../../../assets/Image/arrow-down.png" alt="Rank Down">
-                    <img *ngIf="imageUrl.rankDiff == 0" src="../../../../assets/Image/NoUpDown.png" alt="No Rank">
-                </div>
-                <span class="rank-ud"
-                    [ngStyle]="{'color': imageUrl.rankDiff < 0 ? 'red' : (imageUrl.rankDiff > 0 ? 'green' : 'blue')}">{{imageUrl.rankDiff}}</span>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<ng-template #guestToolbar>
+<ng-template #guestToolbar >
+    
     <mat-toolbar class="fxLayout-dark" (click)="navigateToMain()">
         <div class="fxLayout">
             <img logo src="assets/Image/log_View.png" alt="icon" />
@@ -96,4 +52,99 @@
             </button>
         </div>
     </mat-toolbar>
+   
 </ng-template>
+
+
+<ng-template #adminToolbar>
+    <mat-toolbar class="fxLayout-dark" *ngIf="shareData.userData?.type != 'admin' " else admin>
+        <div class="fxLayout">
+            <img logo src="assets/Image/log_View.png" alt="icon" />
+            <span>View</span>
+        </div>
+        <div>
+            <div class="button_fx" *ngIf="userData">
+                <div class="profile-picture">
+                    <img logo (click)="navigateToAdmin()"  src="{{userData.image}}" alt="icon" />
+                </div>
+                <button mat-flat-button type="submit" color="basic" class="mat-bt logout" (click)="navigateToLogin()">
+                    <mat-icon>exit_to_app</mat-icon>
+                    Logout
+                </button>
+            </div>
+        </div>
+    </mat-toolbar>
+</ng-template>
+
+
+<div class="top-container">
+    <h1 class="TextHead">Top 10 most voted scenic views.</h1>
+    <div class="img-grid">
+        <div class="item" *ngFor="let imageUrl of rank.slice(0, 3); let i = index">
+            <div class="image-container">
+                <img [src]="imageUrl.url" alt="Image">
+                <div class="rank-icon-container">
+                    <img [src]="getRankIconImages(i + 1)" alt="Rank Icon">
+                    <!-- <img [src]="getArrowIcon(imageUrl.rankDiff)" alt="Arrow Icon"> -->
+                </div>
+            </div>
+            <div class="text-container">
+                Score: <span class="vote-score">{{imageUrl.voteScore}}</span>
+                <div class="arrow-icon">
+                    <img *ngIf="imageUrl.rankDiff > 0" src="../../../../assets/Image/arrow-up.png" alt="Rank Up">
+                    <img *ngIf="imageUrl.rankDiff < 0" src="../../../../assets/Image/arrow-down.png" alt="Rank Down">
+                    <img *ngIf="imageUrl.rankDiff == 0" src="../../../../assets/Image/NoUpDown.png" alt="No Rank">
+                </div>
+                <span class="rank-ud"
+                    [ngStyle]="{'color': imageUrl.rankDiff < 0 ? 'red' : (imageUrl.rankDiff > 0 ? 'green' : 'blue')}">{{imageUrl.rankDiff}}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="leaderboard" *ngIf="userData?.type !== 'owner'; else adminTop">
+        <div class="item" *ngFor="let imageUrl of rank.slice(3,10); let i = index">
+            <div class="image-container">
+                <img [src]="imageUrl.url" alt="Image">
+                <div class="rank-container">
+                    <img [src]="getRankIconImages(i + 4)" alt="Rank Icon">
+                </div>
+            </div>
+            <div class="text-container">
+                Score: <span class="vote-score">{{imageUrl.voteScore}}</span>
+                <div class="arrow-icon">
+                    <img *ngIf="imageUrl.rankDiff > 0" src="../../../../assets/Image/arrow-up.png" alt="Rank Up">
+                    <img *ngIf="imageUrl.rankDiff < 0" src="../../../../assets/Image/arrow-down.png" alt="Rank Down">
+                    <img *ngIf="imageUrl.rankDiff == 0" src="../../../../assets/Image/NoUpDown.png" alt="No Rank">
+                </div>
+                <span class="rank-ud"
+                    [ngStyle]="{'color': imageUrl.rankDiff < 0 ? 'red' : (imageUrl.rankDiff > 0 ? 'green' : 'blue')}">{{imageUrl.rankDiff}}</span>
+            </div>
+        </div>
+    </div>
+
+    <ng-template #adminTop>
+        <div class="leaderboard">
+            <div class="item" *ngFor="let imageUrl of rank.slice(3,rank.length); let i = index">
+                <div class="image-container">
+                    <img [src]="imageUrl.url" alt="Image">
+                    <div class="rank-container">
+                        {{ i + 4 }}
+                    </div>                 
+                </div>
+                <div class="text-container">
+                    Score: <span class="vote-score">{{imageUrl.voteScore}}</span>
+                    <div class="arrow-icon">
+                        <img *ngIf="imageUrl.rankDiff > 0" src="../../../../assets/Image/arrow-up.png" alt="Rank Up">
+                        <img *ngIf="imageUrl.rankDiff < 0" src="../../../../assets/Image/arrow-down.png" alt="Rank Down">
+                        <img *ngIf="imageUrl.rankDiff == 0" src="../../../../assets/Image/NoUpDown.png" alt="No Rank">
+                    </div>
+                    <span class="rank-ud"
+                        [ngStyle]="{'color': imageUrl.rankDiff < 0 ? 'red' : (imageUrl.rankDiff > 0 ? 'green' : 'blue')}">{{imageUrl.rankDiff}}</span>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+    
+    
+
+

@@ -1,5 +1,5 @@
 <mat-toolbar class="fxLayout-dark">
-    <div class="fxLayout" (click)="navigateToMain()">
+    <div class="fxLayout">
         <img logo src="assets/Image/log_View.png" alt="icon" />
         <span>View</span>
     </div>
@@ -8,6 +8,14 @@
             <div class="profile-picture">
                 <img logo src="{{shareData.userData?.image}}" alt="icon" />
             </div>
+            <div class="logo-container">
+                <button (click)="navigateTop()" mat-button color="basic" class="bt-span">
+                    <mat-icon class="icon-margin">emoji_events</mat-icon>
+                    Top10
+                </button>
+            </div>
+
+
             <button mat-flat-button type="submit" color="basic" class="mat-bt logout" (click)="navigateToLogin()">
                 <mat-icon>exit_to_app</mat-icon>
                 Logout
@@ -33,33 +41,29 @@
                             <th scope="col" class="table-header">Name</th>
                             <th scope="col" class="table-header">Email</th>
                             <th scope="col" class="table-header">Amount Picture</th>
-                            <th class="table-header"></th>
+                            <th class="table-header" style="text-align: right;">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <input type="text" placeholder="Enter time set" class="form-control mr-2 w-50">
+                                    <a class="btn btn-outline-success w-40 text-center" style="font-size: 12px;">Set
+                                        Time</a>
+                                </div>
+
+                            </th>
                         </tr>
                     </thead>
-                    <tbody *ngFor="let item of [1,2,3,4,5]">
-                        <tr>
-                            <td class="table-data">
-                                15
-                            </td>
-                            <td (click)="navigateToViewProfile()">
-                                <img alt="..." src="../../../assets/Image/catavatar.png"
+                    <tbody>
+                        <tr *ngFor="let member of user">
+                            <td class="table-data">{{member.userID}}</td>
+                            <td (click)="navigateToViewProfile(member.userID)">
+                                <img alt="..." [src]="sanitizeUrl(member.image)"
                                     class="avatar avatar-sm rounded-circle me-2">
-                                <a class="text-heading font-semibold" >
-                                    Robert Fox
-                                </a>
+                                <a class="text-heading font-semibold">{{member.username}}</a>
                             </td>
-                            <td class="table-data">
-                                RobertFoxgmail.com
-                            </td>
-
-                            <td class="table-data">
-                                5
-                            </td>
+                            <td class="table-data">{{member.email}}</td>
+                            <td class="table-data">{{getImageCount(member.userID)}}</td> <!-- Display image count -->
                             <td class="text-end">
-                                <a class="btn btn-sm btn-neutral">View</a>
-                                <button type="button" class="btn btn-sm btn-square btn-neutral text-danger-hover">
-                                    <mat-icon aria-label="delete" class="icon-large">delete</mat-icon>
-                                </button>                                
+                                <a class="btn btn-sm btn-neutral"
+                                    (click)="navigateToViewProfile(member.userID)">View</a>
                             </td>
                         </tr>
                     </tbody>

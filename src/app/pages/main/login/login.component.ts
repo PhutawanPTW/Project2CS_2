@@ -32,8 +32,8 @@ export class LoginComponent {
     this.router.navigate(['/']);
   }
 
-  navigateToAdmin() {
-    this.router.navigate(['/Admin']);
+  navigateToAdmin(id : number) {
+    this.router.navigate(['/admin/' + id]);
   }
 
   login(user: string, password: string) {
@@ -50,7 +50,8 @@ export class LoginComponent {
       if (password === foundUser.password) {
         // Check if the user is an owner or a regular user
         if (foundUser.type === 'owner') {
-          this.navigateToAdmin();
+          this.navigateToAdmin(foundUser.userID);
+          
         } else {
           this.navigateToMain();
         }

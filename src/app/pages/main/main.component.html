@@ -55,29 +55,30 @@
 
 <div class="vote-con" *ngIf="canVote; else waitForVote">
     <h1>Click to Reshuffle Images</h1>
-    <div class='toggle' id='switch' >
+    <div class='toggle toggle-on' id='switch'>
         <div class='toggle-text-off'>OFF</div>
         <div class='glow-comp'></div>
         <div class='toggle-button'></div>
         <div class='toggle-text-on'>ON</div>
     </div>
     
+
     <ng-container *ngIf="leftImage && rightImage; else loadingImages">
-        <div class="img-con">
+        <div class="img-con" *ngIf="this.user">
             <div class="item">
-                <img [src]="leftImage?.url" (click)="reshuffleImages(leftImage, rightImage)" alt="">
+                <img [src]="leftImage?.url" (click)="canVote && reshuffleImages(leftImage, rightImage)" alt="">
                 <h3>
                     view by&nbsp; <span *ngIf="shareData.userData && userData1?.username as username1; else notLoggedIn"
-                        (click)="navigateToUserProfile(username1)">{{ username1 }}</span>
+                        (click)="navigateToViewProfile(leftImage.userID)">{{ username1 }}</span>
                     <mat-icon style="color: red;">favorite</mat-icon>
                     {{ leftImage?.count || 0 || 'No votes' }}
                 </h3>
             </div>
             <div class="item">
-                <img [src]="rightImage?.url" (click)="reshuffleImages(rightImage, leftImage)" alt="">
+                <img [src]="rightImage?.url" (click)="canVote && reshuffleImages(rightImage, leftImage)" alt="">
                 <h3>
                     view by&nbsp; <span *ngIf="shareData.userData && userData2?.username as username2; else notLoggedin"
-                        (click)="navigateToUserProfile(username2)">{{ username2 }}</span>
+                        (click)="navigateToViewProfile(rightImage.userID)">{{ username2 }}</span>
                     <mat-icon style="color: red;">favorite</mat-icon>
                     {{ rightImage?.count || 0 || 'No votes' }}
                 </h3>
@@ -89,6 +90,7 @@
                 <span (click)="alertMessage()">{{ userData2?.username }}</span>
             </ng-template>
         </div>
+
     </ng-container>
     <ng-template #loadingImages>
 
@@ -103,5 +105,6 @@
 </div>
 
 <ng-template #waitForVote>
-    <h1 style="display: flex; justify-content: center; align-items: center; font-family: Anonymous Pro, monospace;">Wait For Image Cooldown</h1>
+    <h1 style="display: flex; justify-content: center; align-items: center; font-family: Anonymous Pro, monospace;">Wait
+        For Image Cooldown</h1>
 </ng-template>

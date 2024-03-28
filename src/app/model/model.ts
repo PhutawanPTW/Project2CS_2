@@ -38,14 +38,16 @@ export interface imageUser {
   rankToday: number;
   rankYesterday: number;
   rankDifferent: number;
+  oldScore: number;
+  image: string;
 }
 
 export interface rankID {
-  imageID : number;
-  rankDiff : number;
-  url : string;
-  username : string;
-  voteScore : number;
+  imageID: number;
+  rankDiff: number;
+  url: string;
+  username: string;
+  voteScore: number;
 }
 
 export interface Vote {
@@ -61,10 +63,13 @@ export interface Statistic {
   imageID: number;
 }
 
+export interface ImageCount {
+  userID: number;
+  image_count: number;
+}
 
 // export interface Statistics {
 //   voteScore: number;
 //   date: Date;
 //   imageID: number;
 // }
-

@@ -1,18 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ActivatedRoute } from '@angular/router';
-import { Router } from '@angular/router';
+import { User, imageUpload, imageUser, rankID } from '../../../model/model';
 import { ApiService } from '../../../services/api-service';
 import { ShareService } from '../../../services/share.service';
+import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { User, imageUpload, imageUser, rankID } from '../../../model/model';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-top10',
+  selector: 'app-view-profile',
   standalone: true,
   imports: [
     MatToolbarModule,
@@ -22,35 +23,65 @@ import { User, imageUpload, imageUser, rankID } from '../../../model/model';
     MatFormFieldModule,
     MatIconModule,
   ],
-  templateUrl: './top10.component.html',
-  styleUrls: ['./top10.component.scss'],
+  templateUrl: './view-profile.component.html',
+  styleUrl: '../profile/profile.component.scss',
 })
-export class Top10Component implements OnInit {
+export class ViewProfileComponent {
   constructor(
     private route: ActivatedRoute,
     protected shareData: ShareService,
     protected api: ApiService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) {}
-
+  id: any;
+  public images: imageUser[] = [];
+  httpError: boolean = false;
+  imageCount: number = 0;
+  userData: User | undefined;
   Today: imageUser[] = [];
   Yesterday: imageUser[] = [];
   rank: rankID[] = [];
-  id: any;
-  userData: User | undefined;
-  userUrls: User[] = [];
   async ngOnInit() {
+    this.checkData();
+    this.checkLogin();
+    this.setData();
+    this.getImage();
+    console.log(this.userData);
+  }
+
+  checkData() {
     const userDataString = localStorage.getItem('userData');
-    this.userData = userDataString ? JSON.parse(userDataString) : undefined; // เช็คว่ามีข้อมูล userDataString หรือไม่
-    this.id = localStorage.getItem('userID');
-    if (this.userData !== undefined) {
+    if (userDataString) {
+      try {
+        const userData = JSON.parse(userDataString);
+        this.shareData.userData = userData;
+      } catch (error) {
+        console.error('Error parsing userData from localStorage:', error);
+        this.loadData();
+      }
+    } else {
       this.loadData();
-      this.getTopImageData();
-    }else{
-      this.getTopImageData();
+    }
+  }
+  async loadData() {
+    if (!this.id) {
+      return;
+    }
+    if (!localStorage.getItem('userData')) {
+      this.shareData.userData = await this.api.getUserbyId(this.id);
+      localStorage.setItem('userData', JSON.stringify(this.shareData.userData));
+      console.log(this.shareData.userData);
     }
   }
 
+  async getImage() {
+    this.getTopImageData();
+    this.getRank(this.Today, this.Yesterday);
+    await this.shareData.getImage(this.id);
+    this.images = this.shareData.images;
+    this.imageCount = this.images.length;
+  }
   async getTopImageData() {
     this.Today = await this.api.gettodayrank();
     this.Yesterday = await this.api.getyesterdayrank();
@@ -90,42 +121,19 @@ export class Top10Component implements OnInit {
     console.log(this.rank);
   }
 
-  async loadData() {
-    this.shareData.userData = await this.api.getUserbyId(this.id);
-    localStorage.setItem('userData', JSON.stringify(this.shareData.userData));
-    // console.log(this.shareData.userData);
+  async setData() {
+    this.id = this.route.snapshot.paramMap.get('id');
+    this.userData = await this.api.getUserbyId(this.id);
   }
 
-  getRankIconImages(rankNumber: number): string {
-    switch (rankNumber) {
-      case 1:
-        return 'assets/Image/gold-medal.png';
-      case 2:
-        return 'assets/Image/2nd-place.png';
-      case 3:
-        return 'assets/Image/3rd-place.png';
-      case 4:
-        return 'assets/Image/number-4.png';
-      case 5:
-        return 'assets/Image/number-5.png';
-      case 6:
-        return 'assets/Image/number-6.png';
-      case 7:
-        return 'assets/Image/number-7.png';
-      case 8:
-        return 'assets/Image/number-8.png';
-      case 9:
-        return 'assets/Image/number-9.png';
-      case 10:
-        return 'assets/Image/number-10.png';
-      default:
-        return 'assets/Image/null.png';
+  checkLogin() {
+    if (!localStorage.getItem('userData') || !localStorage.getItem('userID')) {
+      this.navigateToLogin();
     }
   }
-  
 
-  navigateTop() {
-    this.router.navigate(['/top10']);
+  navigateChart(imageId: number) {
+    this.router.navigate(['/chart', imageId]);
   }
 
   navigateToMain() {
@@ -137,24 +145,18 @@ export class Top10Component implements OnInit {
   }
 
   navigateToLogin() {
-    localStorage.clear();
     this.router.navigate(['/login']);
-    this.clearData();
-  }
-  navigateTomain() {
-    this.router.navigate(['/']);
   }
 
-  navigateProfile() {
-    this.router.navigate(['/profile']);
+  navigateAdmin() {
+    if (this.shareData.userData?.type == 'owner') {
+      this.router.navigate(['/admin/' + this.id]);
+    } else {
+      this.router.navigate(['/profile']);
+    }
   }
 
-  clearData() {
-    this.shareData.userData = undefined;
+  navigateTop() {
+    this.router.navigate(['/top10']);
   }
-
-  navigateToAdmin() {
-    this.router.navigate(['/admin/' + this.userData!.userID]);
-  }
-
 }

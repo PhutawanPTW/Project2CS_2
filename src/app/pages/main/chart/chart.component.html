@@ -1,4 +1,4 @@
-<mat-toolbar class="fxLayout-dark">
+<mat-toolbar class="fxLayout-dark" *ngIf="shareData.userData?.type != 'owner'; else owner">
     <div class="fxLayout" (click)="navigateToMain()">
         <img logo src="assets/Image/log_View.png" alt="icon" />
         <span>View</span>
@@ -21,6 +21,27 @@
         </div>
     </div>
 </mat-toolbar>
+
+
+<ng-template #owner>
+    <mat-toolbar class="fxLayout-dark" *ngIf="shareData.userData?.type != 'admin' " else admin>
+        <div class="fxLayout">
+            <img logo src="assets/Image/log_View.png" alt="icon" />
+            <span>View</span>
+        </div>
+        <div>
+            <div class="button_fx" *ngIf="userData">
+                <div class="profile-picture">
+                    <img logo (click)="navigateToAdmin()" src="{{userData.image}}" alt="icon" />
+                </div>
+                <button mat-flat-button type="submit" color="basic" class="mat-bt logout" (click)="navigateToLogin()">
+                    <mat-icon>exit_to_app</mat-icon>
+                    Logout
+                </button>
+            </div>
+        </div>
+    </mat-toolbar>
+</ng-template>
 
 <div class="vote-con">
     <h2>ImageID {{id}}</h2>
