@@ -22,7 +22,8 @@ import { DialogComponent } from './dialog.component';
     CommonModule,
     MatInputModule,
     MatFormFieldModule,
-    MatIconModule,CommonModule
+    MatIconModule,
+    CommonModule,
   ],
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss', './main.component loading.scss'],
@@ -47,6 +48,8 @@ export class MainComponent implements OnInit {
   httpError: boolean = false;
   leftImageError: boolean = false;
   login: boolean = false;
+  plus: number = 0;
+  minus: number = 0;
 
   async ngOnInit() {
     this.id = localStorage.getItem('userID');
@@ -121,7 +124,6 @@ export class MainComponent implements OnInit {
   }
 
   async reshuffleImages(winner: ImageRandom, loser: ImageRandom) {
-    const { plus, minus } = await this.calrating(winner, loser);
     if (this.canVote) {
       this.canVote = false;
 
@@ -146,8 +148,8 @@ export class MainComponent implements OnInit {
               loser.imageID.toString(),
               winner.imageID.toString()
             ),
-            plus: plus,
-            minus: minus,
+            plus: this.plus,
+            minus: this.minus,
           },
         });
 
@@ -155,7 +157,13 @@ export class MainComponent implements OnInit {
           this.shuffleImagesAfterDialogClosed(winner, loser);
         });
       } else {
-        await this.shuffleImagesAfterDialogClosed(winner, loser);
+        await this.loadImages();
+        const ratings = await this.calrating(winner, loser);
+        console.log(ratings);
+        setTimeout(() => {
+          this.canVote = true;
+          this.isCD = true;
+        }, 10000);
       }
     }
   }
@@ -170,7 +178,7 @@ export class MainComponent implements OnInit {
     setTimeout(() => {
       this.canVote = true;
       this.isCD = true;
-    }, 2000);
+    }, 10000);
   }
 
   async calrating(winner: ImageRandom, loser: ImageRandom) {
@@ -193,14 +201,14 @@ export class MainComponent implements OnInit {
       winner.imageID.toString()
     );
 
-    const plus = Math.round(this.K_FACTOR * (1 - winnerExpectedScore));
-    const minus = Math.round(this.K_FACTOR * (0 - loserExpectedScore));
+    this.plus = Math.round(this.K_FACTOR * (1 - winnerExpectedScore));
+    this.minus = Math.round(this.K_FACTOR * (0 - loserExpectedScore));
 
-    console.log(`Plus for ${winner.imageID}: ${plus}`);
-    console.log(`Minus for ${loser.imageID}: ${minus}`);
+    console.log(`Plus for ${winner.imageID}: ${this.plus}`);
+    console.log(`Minus for ${loser.imageID}: ${this.minus}`);
 
-    const winnerNewRating = winnerEloRating + plus;
-    const loserNewRating = loserEloRating + minus;
+    const winnerNewRating = winnerEloRating + this.plus;
+    const loserNewRating = loserEloRating + this.minus;
 
     console.log(`Winner's new rating (${winner.imageID}): ${winnerNewRating}`);
     console.log(`Loser's new rating (${loser.imageID}): ${loserNewRating}`);
@@ -218,12 +226,12 @@ export class MainComponent implements OnInit {
     const winnerBody = {
       userID: winner.userID,
       imageID: winner.imageID,
-      elorating: plus,
+      elorating: this.plus,
     };
     const loserBody = {
       userID: loser.userID,
       imageID: loser.imageID,
-      elorating: minus,
+      elorating: this.minus,
     };
 
     await this.api.updateScore(winner.imageID, winner.count);
@@ -232,8 +240,6 @@ export class MainComponent implements OnInit {
     await this.api.vote(loserBody);
 
     return {
-      plus,
-      minus,
       winnerOldRating: winnerEloRating,
       winnerNewRating: winnerNewRating,
       loserOldRating: loserEloRating,
