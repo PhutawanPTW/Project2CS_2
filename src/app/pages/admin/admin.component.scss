@@ -58,7 +58,6 @@
   //   display: flex;
   //   align-items: center;
   // }
-  
 
   .profile-picture {
     flex-direction: row;
@@ -105,7 +104,7 @@ body {
   font-family: Anonymous Pro, monospace;
 }
 
-.header{
+.header {
   padding-top: 50px;
   padding-bottom: 30px;
 }
@@ -128,8 +127,6 @@ body {
   font-weight: lighter;
   cursor: pointer;
 }
-
-
 
 .text-heading {
   font-size: 16px;
@@ -158,4 +155,9 @@ a.btn {
 
 .avatar:hover {
   outline: 2px solid wheat;
+}
+
+.timebutton {
+  margin-left: 5px;
+  padding: 2px;
 }

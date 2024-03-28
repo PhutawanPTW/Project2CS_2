@@ -27,6 +27,7 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrl: './admin.component.scss',
 })
 export class AdminComponent {
+
   user: User[] = [];
   imgCount: ImageCount[] = [];
   id: any;
@@ -38,7 +39,8 @@ export class AdminComponent {
     protected shareData: ShareService,
     protected api: ApiService,
     private router: Router
-  ) {}
+  ) {
+  }
 
   async ngOnInit() {
     this.id = localStorage.getItem('userID');
@@ -46,8 +48,10 @@ export class AdminComponent {
     console.log(this.shareData.userData);
     this.user = await this.api.getUserMember();
     this.imgCount = await this.api.getImageCount();
+
+   
     console.log('user admin:', this.shareData.userData);
-    if (!this.shareData.userData) {
+    if(!this.shareData.userData){
       this.router.navigate(['/login']);
     }
     console.log('users:', this.user);
@@ -57,16 +61,12 @@ export class AdminComponent {
   checkData() {
     const userDataString = localStorage.getItem('userData');
     if (userDataString) {
-      try {
-        const userData = JSON.parse(userDataString);
-        this.shareData.userData = userData;
-      } catch (error) {
-        console.error('Error parsing userData from localStorage:', error);
-        this.loadData();
-      }
+      const userData = JSON.parse(userDataString);
+      this.shareData.userData = userData;
     } else {
       this.loadData();
     }
+
   }
   async loadData() {
     if (!this.id) {
@@ -105,10 +105,9 @@ export class AdminComponent {
     this.router.navigate(['/top10']);
   }
 
-  getImageCount(userID: number): number {
-    const userImgCount = this.imgCount.find(item => item.userID === userID);
-    return userImgCount ? userImgCount.image_count : 0;
-}
-
-  
+  Change(time : any) {
+    const Time = parseInt(time);
+   const result = this.api.updateTime(Time);
+    alert("update time success");
+  }
 }

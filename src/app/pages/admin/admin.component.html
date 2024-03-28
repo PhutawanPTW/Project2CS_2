@@ -1,5 +1,5 @@
 <mat-toolbar class="fxLayout-dark">
-    <div class="fxLayout">
+    <div class="fxLayout" >
         <img logo src="assets/Image/log_View.png" alt="icon" />
         <span>View</span>
     </div>
@@ -41,29 +41,41 @@
                             <th scope="col" class="table-header">Name</th>
                             <th scope="col" class="table-header">Email</th>
                             <th scope="col" class="table-header">Amount Picture</th>
-                            <th class="table-header" style="text-align: right;">
-                                <div class="d-flex align-items-center justify-content-center">
-                                    <input type="text" placeholder="Enter time set" class="form-control mr-2 w-50">
-                                    <a class="btn btn-outline-success w-40 text-center" style="font-size: 12px;">Set
-                                        Time</a>
-                                </div>
-
-                            </th>
+                            <th scope="col" class="table-header">
+                                Cooldown Time :
+                                <input type="number" style="width: 50px;" #time>
+                                <button class="timebutton" (click)="Change(time.value)">OK</button>
+                              </th>
+                            
+                            <th class="table-header"></th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr *ngFor="let member of user">
-                            <td class="table-data">{{member.userID}}</td>
+                    <tbody *ngFor="let member of user">
+                        <tr>
+                            <td class="table-data">
+                                {{member.userID}}
+                            </td>
                             <td (click)="navigateToViewProfile(member.userID)">
                                 <img alt="..." [src]="sanitizeUrl(member.image)"
                                     class="avatar avatar-sm rounded-circle me-2">
-                                <a class="text-heading font-semibold">{{member.username}}</a>
+                                <a class="text-heading font-semibold" >
+                                    {{member.username}}
+                                </a>
                             </td>
-                            <td class="table-data">{{member.email}}</td>
-                            <td class="table-data">{{getImageCount(member.userID)}}</td> <!-- Display image count -->
+                            <td class="table-data">
+                                {{member.email}}
+                            </td>
+
+                            <ng-container *ngFor="let imgCountItem of imgCount">
+                                <td class="table-data" *ngIf="imgCountItem.userID == member.userID">
+                                    {{ imgCountItem.image_count }}
+                                </td>
+                            </ng-container>
                             <td class="text-end">
-                                <a class="btn btn-sm btn-neutral"
-                                    (click)="navigateToViewProfile(member.userID)">View</a>
+                                <a class="btn btn-sm btn-neutral"(click)="navigateToViewProfile(member.userID)">View</a>
+                                <button type="button" class="btn btn-sm btn-square btn-neutral text-danger-hover">
+                                    <mat-icon aria-label="delete" class="icon-large">delete</mat-icon>
+                                </button>                                
                             </td>
                         </tr>
                     </tbody>

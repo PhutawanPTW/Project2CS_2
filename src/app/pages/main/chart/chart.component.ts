@@ -1,3 +1,4 @@
+
 import { Component, OnInit } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -44,12 +45,38 @@ export class ChartComponent {
   ) {}
 
   async ngOnInit() {
+    this.checkData();
     this.checkLogin();
     const userDataString = localStorage.getItem('userData');
     this.userData = userDataString ? JSON.parse(userDataString) : null;
     this.id = this.route.snapshot.paramMap.get('id');
     this.statistics = await this.api.getStatistic(this.id, 7);
     this.createChart();
+  }
+
+  checkData() {
+    const userDataString = localStorage.getItem('userData');
+    if (userDataString) {
+      try {
+        const userData = JSON.parse(userDataString);
+        this.shareData.userData = userData;
+      } catch (error) {
+        console.error('Error parsing userData from localStorage:', error);
+        this.loadData();
+      }
+    } else {
+      this.loadData();
+    }
+  }
+  async loadData() {
+    if (!this.id) {
+      return;
+    }
+    if (!localStorage.getItem('userData')) {
+      this.shareData.userData = await this.api.getUserbyId(this.id);
+      localStorage.setItem('userData', JSON.stringify(this.shareData.userData));
+      console.log(this.shareData.userData);
+    }
   }
 
   checkLogin() {
@@ -79,6 +106,10 @@ export class ChartComponent {
 
   navigateProfile() {
     this.router.navigate(['/profile']);
+  }
+
+  navigateToAdmin() {
+    this.router.navigate(['/admin/' + this.userData.userID]);
   }
 
   navigateTop() {
@@ -132,38 +163,23 @@ export class ChartComponent {
     for (let i = 0; i < 7; i++) {
       const currentDateMinusDays = new Date(currentDate);
       currentDateMinusDays.setDate(currentDate.getDate() - i);
-     
+
       // Check if there is data for the current date
       const dataForCurrentDate = this.statistics.find((statistic) => {
-         const statisticDate = new Date(statistic.date); // Assuming 'date' is the property in your Statistic model that contains the date
-         return (
-           currentDateMinusDays.getFullYear() === statisticDate.getFullYear() &&
-           currentDateMinusDays.getMonth() === statisticDate.getMonth() &&
-           currentDateMinusDays.getDate() === statisticDate.getDate()
-         );
+        const statisticDate = new Date(statistic.date); // Assuming 'date' is the property in your Statistic model that contains the date
+        return (
+          currentDateMinusDays.getFullYear() === statisticDate.getFullYear() &&
+          currentDateMinusDays.getMonth() === statisticDate.getMonth() &&
+          currentDateMinusDays.getDate() === statisticDate.getDate()
+        );
       });
-     
+
       if (dataForCurrentDate) {
-         data.push(dataForCurrentDate.voteScore);
+        data.push(dataForCurrentDate.voteScore);
       } else {
-         // Find the last available data before the current date
-         const lastAvailableData = this.statistics.find((statistic, index, array) => {
-           const statisticDate = new Date(statistic.date);
-           // Check if the current statistic is the last one before the current date
-           return array.slice(0, index).every(prevStatistic => {
-             const prevStatisticDate = new Date(prevStatistic.date);
-             return prevStatisticDate < statisticDate && prevStatisticDate.getDate() !== currentDateMinusDays.getDate() - 1;
-           });
-         });
-     
-         if (lastAvailableData) {
-           data.push(lastAvailableData.voteScore);
-         } else {
-           data.push(0); // Fallback to 0 if no previous data is found
-         }
+        data.push(0);
       }
-     }
-     
+    }
 
     console.error(data);
 

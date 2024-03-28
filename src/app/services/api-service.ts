@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { count, lastValueFrom } from 'rxjs';
 import {
   ImageCount,
+  ImageRandom,
   Register,
   Statistic,
   User,
@@ -94,18 +95,12 @@ export class ApiService {
   }
 
   public async updateProfileUser(
-    file: File,
-    userID: string
+    userID: string,
+    updatedProfile: imageUser
   ): Promise<imageUser> {
-    const formData = new FormData();
-    formData.append('image', file, file.name);
-    formData.append('userID', userID);
     try {
       const response = await lastValueFrom(
-        this.http.put<imageUser>(
-          `${this.url}/upload/profile/${userID}`,
-          formData
-        )
+        this.http.put<imageUser>(`${this.url}/upload/${userID}`, updatedProfile)
       );
       console.log(response);
       return response;
@@ -114,23 +109,6 @@ export class ApiService {
       throw error;
     }
   }
-
-  async ChangeImage(imageID: number, file: File) {
-    const formData = new FormData();
-    formData.append('imageID', imageID.toString());
-    formData.append('fileimage', file);
-  
-    try {
-      const response = await lastValueFrom(
-        this.http.put<imageUser>(`${this.url}/upload/changeImage/${imageID}`, formData)
-      );
-      console.log(response);
-      return true;
-    } catch (error) {
-      throw error;
-    }
-  }
-  
 
   public async getUserbyId(userId: number) {
     if (userId) {
@@ -148,18 +126,6 @@ export class ApiService {
       this.http.get(`${this.url}/images/${imageID}`)
     );
     return response as imageUpload;
-  }
-
-  public async getProfileUserImage(userId: number): Promise<imageUser> {
-    try {
-      const response = await lastValueFrom(
-        this.http.get<imageUser>(`${this.url}/users/profile/${userId}`)
-      );
-      return response;
-    } catch (error) {
-      console.error('Error fetching profile image:', error);
-      throw error;
-    }
   }
 
   public async deleteImagebyId(imageID: number) {
@@ -214,6 +180,22 @@ export class ApiService {
     this.http.put(this.url + '/images/' + id, body).subscribe();
   }
 
+  public async getTime() {
+    const response = await lastValueFrom(this.http.get(this.url + '/time'));
+    return response;
+  }
+
+  public async updateTime(time: number) {
+    let body = {
+      time: time,
+    };
+    const response = await lastValueFrom(
+      this.http.post(this.url + '/time', body)
+    );
+
+    return response;
+  }
+
   public async getStatistic(imageID: number, day: number) {
     try {
       const response = await lastValueFrom(
@@ -245,5 +227,44 @@ export class ApiService {
     );
 
     return response;
+  }
+
+  public async randomImage(userID: number) {
+    const response = await lastValueFrom(
+      this.http.get<ImageRandom[]>(`${this.url}/images/random/${userID}`)
+    );
+
+    return response;
+  }
+
+  async ChangeImage(imageID: number, file: File) {
+    const formData = new FormData();
+    formData.append('imageID', imageID.toString());
+    formData.append('fileimage', file);
+
+    try {
+      const response = await lastValueFrom(
+        this.http.put<imageUser>(
+          `${this.url}/upload/changeImage/${imageID}`,
+          formData
+        )
+      );
+      console.log(response);
+      return true;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async getProfileUserImage(userId: number): Promise<imageUser> {
+    try {
+      const response = await lastValueFrom(
+        this.http.get<imageUser>(`${this.url}/users/profile/${userId}`)
+      );
+      return response;
+    } catch (error) {
+      console.error('Error fetching profile image:', error);
+      throw error;
+    }
   }
 }

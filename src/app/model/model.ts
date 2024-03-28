@@ -38,8 +38,15 @@ export interface imageUser {
   rankToday: number;
   rankYesterday: number;
   rankDifferent: number;
-  oldScore: number;
   image: string;
+}
+
+export interface ImageRandom {
+  userID: number;
+  imageID: number;
+  url: string;
+  username: string;
+  count: number;
 }
 
 export interface rankID {

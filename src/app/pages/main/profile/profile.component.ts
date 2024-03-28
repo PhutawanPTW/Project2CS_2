@@ -113,7 +113,8 @@ export class ProfileComponent {
         const checkimg = await this.api.ChangeImage(imageID, file);
         if (checkimg) {
           // อัปเดตข้อมูลในอนาคต
-          await this.getImage(); // เรียกใช้งาน getImage() เพื่ออัปเดตรายการภาพใหม่
+          await this.getImage();
+          window.location.reload();
         } else {
           console.log('Error', checkimg);
         }

@@ -5,14 +5,13 @@ import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ActivatedRoute } from '@angular/router';
-import { User, imageUpload, imageUser } from '../../model/model';
+import { ImageRandom, User } from '../../model/model';
 import { ApiService } from '../../services/api-service';
 import { ShareService } from '../../services/share.service';
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from './dialog.component';
-import $ from 'jquery';
 
 @Component({
   selector: 'app-main',
@@ -38,32 +37,32 @@ export class MainComponent implements OnInit {
   ) {}
 
   id: any;
-  leftImage: any;
-  rightImage: any;
+
+  imageRandom: ImageRandom[] = [];
+  leftImage: ImageRandom | undefined;
+  rightImage: ImageRandom | undefined;
   K_FACTOR: number = 32;
-  userData1: User | undefined;
-  userData2: User | undefined;
-  public images: imageUser[] = [];
   canVote = true;
   isCD = true;
   httpError: boolean = false;
   leftImageError: boolean = false;
-  user: User[] = [];
+  login: boolean = false;
 
   async ngOnInit() {
     this.id = localStorage.getItem('userID');
     this.checkData();
-    this.images = await this.api.getImage();
-
     this.loadImages();
 
-    $('.toggle').click(function (e: JQuery.Event) {
-      e.preventDefault();
-      $(this).toggleClass('toggle-on');
-    });
     if (this.shareData.userData?.type == 'owner') {
       this.router.navigate(['/login']);
     }
+
+    if (this.shareData.userData) {
+      this.login = true;
+    } else {
+      this.login = false;
+    }
+
     console.log(this.shareData.userData);
   }
 
@@ -81,6 +80,7 @@ export class MainComponent implements OnInit {
       this.loadData();
     }
   }
+
   async loadData() {
     if (!this.id) {
       return;
@@ -88,64 +88,45 @@ export class MainComponent implements OnInit {
     if (!localStorage.getItem('userData')) {
       this.shareData.userData = await this.api.getUserbyId(this.id);
       localStorage.setItem('userData', JSON.stringify(this.shareData.userData));
-      // console.log(this.shareData.userData);
     }
   }
 
   async loadImages() {
-    if (this.images && this.images.length >= 2) {
-      this.canVote = true;
-      const randomIndex1 = Math.floor(Math.random() * this.images.length);
-      let randomIndex2 = Math.floor(Math.random() * this.images.length);
-
-      while (
-        randomIndex2 === randomIndex1 ||
-        this.images[randomIndex2].imageID === this.leftImage?.imageID ||
-        this.images[randomIndex2].imageID === this.rightImage?.imageID
-      ) {
-        randomIndex2 = Math.floor(Math.random() * this.images.length);
+    if (this.id) {
+      const imageRandom = await this.api.randomImage(this.id);
+      if (imageRandom) {
+        this.imageRandom = imageRandom;
       }
-
-      this.leftImage = this.images[randomIndex1];
-      this.rightImage = this.images[randomIndex2];
     } else {
-      this.canVote = false;
+      const machineId = await this.getMachineId();
+      const imageRandom = await this.api.randomImage(machineId);
+      this.imageRandom = imageRandom;
     }
-
-    const [userData1, userData2] = await Promise.all([
-      this.api.getUserbyId(this.leftImage.userID),
-      this.api.getUserbyId(this.rightImage.userID),
-    ]);
-
-    this.userData1 = userData1;
-    this.userData2 = userData2;
   }
 
-  async reshuffleImages(winner: imageUser, loser: imageUser) {
-    const {
-      plus,
-      minus,
-      winnerOldRating,
-      winnerNewRating,
-      loserOldRating,
-      loserNewRating,
-      winnerExpectedScore,
-      loserExpectedScore,
-    } = await this.calrating(winner, loser);
+  async getMachineId() {
+    const dataToHash = `${navigator.userAgent}${navigator.platform}`;
+    const encoder = new TextEncoder();
+    const dataBuffer = encoder.encode(dataToHash);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer);
+    const hashBigInt = BigInt(
+      '0x' +
+        Array.from(new Uint8Array(hashBuffer))
+          .map((b) => b.toString(16).padStart(2, '0'))
+          .join('')
+    );
+    const machineId = parseInt(hashBigInt.toString().slice(0, 9));
 
-    console.log(`Winner's old rating: ${winnerOldRating}`);
-    console.log(`Winner's new rating: ${winnerNewRating}`);
-    console.log(`Winner's increased by: ${plus}`);
-    console.log(`Winner's expected score: ${winnerExpectedScore}`);
+    return machineId;
+  }
 
-    console.log(`Loser's old rating: ${loserOldRating}`);
-    console.log(`Loser's new rating: ${loserNewRating}`);
-    console.log(`Loser's decreased by: ${minus}`);
-    console.log(`Loser's expected score: ${loserExpectedScore}`);
+  async reshuffleImages(winner: ImageRandom, loser: ImageRandom) {
+    const { plus, minus } = await this.calrating(winner, loser);
+    if (this.canVote) {
+      this.canVote = false;
 
-    if (this.isCD) {
-      this.isCD = false;
-      if (!$('.toggle').hasClass('toggle-on')) {
+      if (this.isCD) {
+        this.isCD = false;
         const dialogRef = this.dialog.open(DialogComponent, {
           width: '900px',
           data: {
@@ -171,54 +152,68 @@ export class MainComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe((result) => {
-          this.chooseRandomImages(winner, loser);
-          this.loadImages();
-          if (this.canVote) {
-            this.calrating(winner, loser);
-          }
-          setTimeout(() => {
-            this.isCD = true;
-          }, 1000);
+          this.shuffleImagesAfterDialogClosed(winner, loser);
         });
       } else {
-        this.chooseRandomImages(winner, loser);
-        this.loadImages();
-        if (this.canVote) {
-          this.calrating(winner, loser);
-        }
-        setTimeout(() => {
-          this.isCD = true;
-        }, 1000);
+        await this.shuffleImagesAfterDialogClosed(winner, loser);
       }
     }
   }
 
-  async calrating(winner: imageUser, loser: imageUser) {
+  async shuffleImagesAfterDialogClosed(
+    winner: ImageRandom,
+    loser: ImageRandom
+  ) {
+    await this.loadImages();
+    const ratings = await this.calrating(winner, loser);
+    console.log(ratings);
+    setTimeout(() => {
+      this.canVote = true;
+      this.isCD = true;
+    }, 2000);
+  }
+
+  async calrating(winner: ImageRandom, loser: ImageRandom) {
     const winnerEloRating = winner.count;
     const loserEloRating = loser.count;
+
+    console.log(`Winner's old rating (${winner.imageID}): ${winnerEloRating}`);
+    console.log(`Loser's old rating (${loser.imageID}): ${loserEloRating}`);
 
     const winnerExpectedScore = this.calculateExpectedScore(
       winnerEloRating,
       loserEloRating,
-      winner.imageID.toString(), // แปลงเป็น string
-      loser.imageID.toString() // แปลงเป็น string
+      winner.imageID.toString(),
+      loser.imageID.toString()
     );
     const loserExpectedScore = this.calculateExpectedScore(
       loserEloRating,
       winnerEloRating,
-      loser.imageID.toString(), // แปลงเป็น string
-      winner.imageID.toString() // แปลงเป็น string
+      loser.imageID.toString(),
+      winner.imageID.toString()
     );
 
     const plus = Math.round(this.K_FACTOR * (1 - winnerExpectedScore));
     const minus = Math.round(this.K_FACTOR * (0 - loserExpectedScore));
 
+    console.log(`Plus for ${winner.imageID}: ${plus}`);
+    console.log(`Minus for ${loser.imageID}: ${minus}`);
+
     const winnerNewRating = winnerEloRating + plus;
     const loserNewRating = loserEloRating + minus;
 
-    // ปัดคะแนนใหม่เป็นจำนวนเต็ม
+    console.log(`Winner's new rating (${winner.imageID}): ${winnerNewRating}`);
+    console.log(`Loser's new rating (${loser.imageID}): ${loserNewRating}`);
+
     winner.count = Math.round(winnerNewRating);
     loser.count = Math.round(loserNewRating);
+
+    console.log(
+      'Winner is ' + winner.imageID + ' with new Elo rating: ' + winner.count
+    );
+    console.log(
+      'Loser is ' + loser.imageID + ' with new Elo rating: ' + loser.count
+    );
 
     const winnerBody = {
       userID: winner.userID,
@@ -256,6 +251,9 @@ export class MainComponent implements OnInit {
   ): number {
     const exponent = (opponentRating - playerRating) / 400;
     const expectedScore = 1 / (1 + Math.pow(10, exponent));
+    console.log(
+      `Expected Score for ImageID ${opponentImageID}: ${expectedScore}`
+    );
     return expectedScore;
   }
 
@@ -277,19 +275,11 @@ export class MainComponent implements OnInit {
     this.router.navigate(['/profile']);
   }
 
-  navigateToViewProfile(userID: number) {
-    const isLoggedIn = this.shareData.userData !== undefined; // Check if user is logged in
-    const loggedInUserID = this.shareData.userData
-      ? this.shareData.userData.userID
-      : null; // Get logged in user's ID
-    if (isLoggedIn && loggedInUserID === userID) {
-      // If logged in and the clicked profile is the user's own profile
-      this.router.navigate(['/profile']); // Navigate to the profile page
-    } else if (isLoggedIn) {
-      // If logged in but trying to view another user's profile
-      this.router.navigate(['/ViewProfile', userID]); // Navigate to the view profile page
+  navigateToUserProfile(userID: any) {
+    const isLoggedIn = true;
+    if (isLoggedIn) {
+      this.router.navigate(['/ViewProfile', userID]);
     } else {
-      // If not logged in
       this.alertMessage();
     }
   }
@@ -309,44 +299,6 @@ export class MainComponent implements OnInit {
     this.shareData.userData = undefined;
   }
 
-  countdownDuration: number = 10; // Set the countdown duration in seconds
+  countdownDuration: number = 10;
   countdownInterval: any;
-
-  chooseRandomImages(select: imageUser, select2: imageUser) {
-    const foundItemIndex = this.images.findIndex(
-      (item) => item.imageID === select.imageID
-    );
-
-    const foundItemIndex2 = this.images.findIndex(
-      (item) => item.imageID === select2.imageID
-    );
-
-    if (foundItemIndex !== -1 && foundItemIndex2 !== -1) {
-      const chosenImage = this.images.splice(foundItemIndex, 1)[0];
-      const chosenImage2 = this.images.splice(foundItemIndex2, 1)[0];
-      // console.log('Removed images after vote:', chosenImage, chosenImage2);
-      // console.log('all', this.images);
-
-      if (this.images.length === 2) {
-        this.canVote = false; // Disable further voting when only two images are left
-
-        // Start the countdown
-        this.countdownInterval = setInterval(() => {
-          this.countdownDuration--;
-
-          if (this.countdownDuration === 0) {
-            clearInterval(this.countdownInterval);
-            this.images.push(chosenImage, chosenImage2);
-            console.log('Array after addition:', this.images);
-            this.canVote = true;
-            this.countdownDuration = 10; // Reset the countdown duration
-          }
-        }, 10);
-      }
-    } else {
-      console.log(
-        `Item with imageID ${select.imageID} or ${select2.imageID} not found in the array.`
-      );
-    }
-  }
 }
