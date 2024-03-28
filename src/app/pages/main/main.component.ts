@@ -22,7 +22,7 @@ import { DialogComponent } from './dialog.component';
     CommonModule,
     MatInputModule,
     MatFormFieldModule,
-    MatIconModule,
+    MatIconModule,CommonModule
   ],
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss', './main.component loading.scss'],

@@ -40,6 +40,7 @@ export class UpdateProfileDialogComponent implements OnInit {
   ngOnInit(): void {
     this.setUser();
     console.log(this.userData);
+    
   }
 
   setUser() {
@@ -85,6 +86,8 @@ export class UpdateProfileDialogComponent implements OnInit {
       );
       // Update profile image in userData
       this.userData.image = response.image;
+
+      
 
       // Display the selected image immediately
       const reader = new FileReader();
