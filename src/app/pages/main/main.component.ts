@@ -183,7 +183,7 @@ export class MainComponent implements OnInit {
         setTimeout(() => {
           this.canVote = true;
           this.isCD = true;
-        }, 10000);
+        }, 5000);
       }
     }
   }
