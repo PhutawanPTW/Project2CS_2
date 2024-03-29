@@ -112,7 +112,6 @@ export class ProfileComponent {
         console.log('File uploaded successfully', file);
         const checkimg = await this.api.ChangeImage(imageID, file);
         if (checkimg) {
-          // อัปเดตข้อมูลในอนาคต
           await this.getImage();
           window.location.reload();
         } else {
