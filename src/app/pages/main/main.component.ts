@@ -183,7 +183,7 @@ export class MainComponent implements OnInit {
         setTimeout(() => {
           this.canVote = true;
           this.isCD = true;
-        }, 5000);
+        }, 2000);
       }
     }
   }
@@ -198,7 +198,7 @@ export class MainComponent implements OnInit {
     setTimeout(() => {
       this.canVote = true;
       this.isCD = true;
-    }, 10000);
+    }, 2000);
   }
 
   async calrating(winner: ImageRandom, loser: ImageRandom) {
