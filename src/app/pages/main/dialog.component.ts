@@ -5,7 +5,6 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-your-dialog',
@@ -18,7 +17,6 @@ import { CommonModule } from '@angular/common';
     MatListModule,
     MatButtonModule,
     MatDialogModule,
-    CommonModule,
   ],
 })
 export class DialogComponent implements OnInit {
