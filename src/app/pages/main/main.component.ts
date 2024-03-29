@@ -126,6 +126,26 @@ export class MainComponent implements OnInit {
   async reshuffleImages(winner: ImageRandom, loser: ImageRandom) {
     if (this.canVote) {
       this.canVote = false;
+      const {
+        plus,
+        minus,
+        winnerOldRating,
+        winnerNewRating,
+        loserOldRating,
+        loserNewRating,
+        winnerExpectedScore,
+        loserExpectedScore,
+      } = await this.calrating(winner, loser);
+
+      console.log(`Winner's old rating: ${winnerOldRating}`);
+      console.log(`Winner's new rating: ${winnerNewRating}`);
+      console.log(`Winner's increased by: ${plus}`);
+      console.log(`Winner's expected score: ${winnerExpectedScore}`);
+
+      console.log(`Loser's old rating: ${loserOldRating}`);
+      console.log(`Loser's new rating: ${loserNewRating}`);
+      console.log(`Loser's decreased by: ${minus}`);
+      console.log(`Loser's expected score: ${loserExpectedScore}`);
 
       if (this.isCD) {
         this.isCD = false;
@@ -148,8 +168,8 @@ export class MainComponent implements OnInit {
               loser.imageID.toString(),
               winner.imageID.toString()
             ),
-            plus: this.plus,
-            minus: this.minus,
+            plus: plus,
+            minus: minus,
           },
         });
 
@@ -185,8 +205,8 @@ export class MainComponent implements OnInit {
     const winnerEloRating = winner.count;
     const loserEloRating = loser.count;
 
-    console.log(`Winner's old rating (${winner.imageID}): ${winnerEloRating}`);
-    console.log(`Loser's old rating (${loser.imageID}): ${loserEloRating}`);
+    // console.log(`Winner's old rating (${winner.imageID}): ${winnerEloRating}`);
+    // console.log(`Loser's old rating (${loser.imageID}): ${loserEloRating}`);
 
     const winnerExpectedScore = this.calculateExpectedScore(
       winnerEloRating,
@@ -201,27 +221,27 @@ export class MainComponent implements OnInit {
       winner.imageID.toString()
     );
 
-    this.plus = Math.round(this.K_FACTOR * (1 - winnerExpectedScore));
-    this.minus = Math.round(this.K_FACTOR * (0 - loserExpectedScore));
+    const plus = Math.round(this.K_FACTOR * (1 - winnerExpectedScore));
+    const minus = Math.round(this.K_FACTOR * (0 - loserExpectedScore));
 
-    console.log(`Plus for ${winner.imageID}: ${this.plus}`);
-    console.log(`Minus for ${loser.imageID}: ${this.minus}`);
+    // console.log(`Plus for ${winner.imageID}: ${plus}`);
+    // console.log(`Minus for ${loser.imageID}: ${minus}`);
 
-    const winnerNewRating = winnerEloRating + this.plus;
-    const loserNewRating = loserEloRating + this.minus;
+    const winnerNewRating = winnerEloRating + plus;
+    const loserNewRating = loserEloRating + minus;
 
-    console.log(`Winner's new rating (${winner.imageID}): ${winnerNewRating}`);
-    console.log(`Loser's new rating (${loser.imageID}): ${loserNewRating}`);
+    // console.log(`Winner's new rating (${winner.imageID}): ${winnerNewRating}`);
+    // console.log(`Loser's new rating (${loser.imageID}): ${loserNewRating}`);
 
     winner.count = Math.round(winnerNewRating);
     loser.count = Math.round(loserNewRating);
 
-    console.log(
-      'Winner is ' + winner.imageID + ' with new Elo rating: ' + winner.count
-    );
-    console.log(
-      'Loser is ' + loser.imageID + ' with new Elo rating: ' + loser.count
-    );
+    // console.log(
+    //   'Winner is ' + winner.imageID + ' with new Elo rating: ' + winner.count
+    // );
+    // console.log(
+    //   'Loser is ' + loser.imageID + ' with new Elo rating: ' + loser.count
+    // );
 
     const winnerBody = {
       userID: winner.userID,
@@ -240,6 +260,8 @@ export class MainComponent implements OnInit {
     await this.api.vote(loserBody);
 
     return {
+      plus,
+      minus,
       winnerOldRating: winnerEloRating,
       winnerNewRating: winnerNewRating,
       loserOldRating: loserEloRating,
@@ -257,9 +279,9 @@ export class MainComponent implements OnInit {
   ): number {
     const exponent = (opponentRating - playerRating) / 400;
     const expectedScore = 1 / (1 + Math.pow(10, exponent));
-    console.log(
-      `Expected Score for ImageID ${opponentImageID}: ${expectedScore}`
-    );
+    // console.log(
+    //   `Expected Score for ImageID ${opponentImageID}: ${expectedScore}`
+    // );
     return expectedScore;
   }
 
